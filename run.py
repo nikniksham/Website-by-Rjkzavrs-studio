@@ -14,7 +14,7 @@ login_manager.init_app(app)
 
 
 def main(port=8000):
-    db_session.global_init("db/new_colonist_2.sqlite")
+    db_session.global_init("db/Followers_Rjkzavrs.sqlite")
     app.run(port=port)
 
 
