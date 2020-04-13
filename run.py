@@ -10,7 +10,17 @@ login_manager.init_app(app)
 # открывают наш сайт
 @app.route("/")
 def hello():
-    return "<h1>Welcome to my web site.<h1>"
+    return '''<!DOCTYPE html>
+            <html lang="en">
+            <head>
+               <meta charset="UTF-8">
+                   <title>Марс</title>
+               </head>
+               <body>
+                   <h1>Миссия Колонизация Марса</h1>
+                   <h1>И на марсе будут яблони цвести!</h1>
+               </body>
+            </html>'''
 
 
 def main(port=8000):
