@@ -1,0 +1,70 @@
+.red {
+    color: #f44;
+}
+
+.blue_button {
+    color: #fff;
+    background: #44f;
+}
+
+.c1 {
+    background: #f44;
+}
+
+.c2 {
+    background: #4f4;
+}
+
+.c3 {
+    background: #ff4;
+}
+
+.c4 {
+    background: #888;
+}
+
+form.login_form {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 450px;
+    background-color: #ffcc00;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+table {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    max-width: 90%;
+    width: 90%;
+    text-align: center;
+    border-collapse: collapse;
+    border-top: 7px solid #ddd;
+    border-bottom: 7px solid #ddd;
+}
+
+th {
+    font-size: 13px;
+    font-weight: normal;
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    color: #ddd;
+    padding: 8px;
+}
+
+td {
+    background: #ccc;
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    color: #000;
+    padding: 8px;
+}
+
+p, a {
+    float: left;
+}
+
+.text {
+    text-align: left;
+}
