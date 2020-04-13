@@ -1,2 +1,4 @@
 from . import users
-from . import jobs
+from . import publications
+from . import developers_diary
+from . import products
