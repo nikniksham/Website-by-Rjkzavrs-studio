@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href={{style}}>
+    <title>{{title}}</title>
+</head>
+<body>
+<img src="{{bgimg}}" class="background">
+<header class="navbar navbar-light">
+    <div class="left-head">
+        <a href=""><h4 class="asd">RJKZAVRS STUDIO</h4></a>
+    </div>
+    <div class="center-head">
+        <div>
+            <a href=""><h4 class="asd">Главная</h4></a>
+            <a href=""><h4 class="asd">Игра</h4></a>
+            <a href=""><h4 class="asd">Дневник разработчиков</h4></a>
+            <a href=""><h4 class="asd">Форум</h4></a>
+            <a href=""><h4 class="asd">О нас</h4></a>
+        </div>
+    </div>
+    <div class="right-head">
+        <a href=""><h4 class="asd">Войти</h4></a>
+        <a href=""><h4 class="asd">Зарегестрироваться</h4></a>
+    </div>
+</header>
+<main role="main" class="container">
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

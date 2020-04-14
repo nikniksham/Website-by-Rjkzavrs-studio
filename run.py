@@ -33,6 +33,12 @@ def logout():
     return redirect("/")
 
 
+# сохдаваемая страница
+@app.route("/test/")
+def website_test():
+    return render_template('base_2.html', title='Главная страница', style=url_for('static', filename='css/style.css'), bgimg=url_for('static', filename='img/background_img_1.png'))
+
+
 # Стартовая страница
 @app.route("/")
 def website_main():
@@ -40,6 +46,7 @@ def website_main():
 
 
 if __name__ == '__main__':
+    print("http://127.0.0.1:8000/test/")
     main()
     create_new_db = False
     if create_new_db:

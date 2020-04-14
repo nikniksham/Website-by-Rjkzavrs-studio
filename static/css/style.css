@@ -61,10 +61,65 @@ td {
     padding: 8px;
 }
 
-p, a {
+p {
     float: left;
+    text-decoration: none;
 }
 
 .text {
     text-align: left;
+}
+
+a {
+    text-decoration: none; /* Убираем подчеркивание у ссылок */
+    float: left;
+}
+a:hover{
+    text-decoration: none;
+}
+
+img.background {
+  min-height: 100%;
+  min-width: 640px;
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  /* Зависит от размера изображения */
+  @media screen and (max-width: 640px){
+	img.bg {
+	  left: 50%;
+	  margin-left: -320px;
+	}
+  }
+}
+
+.asd {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: #000;
+    position: relative;
+    padding: 5px 5px;
+    margin: 0 5px;
+}
+
+div.left-head {
+    width: 25%;
+}
+
+div.center-head {
+    display: flex;
+    align: center;
+}
+
+
+div.right-head {
+    width: 25%;
+    display: -webkit-flex;
+    -webkit-flex-direction: row-reverse;
+    display: flex;
+    flex-direction: row-reverse;
 }
