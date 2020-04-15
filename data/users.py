@@ -17,8 +17,10 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime)
     status = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
+    background_image_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
     publications = orm.relation('Publications')
     developers_diary = orm.relation('DevelopersDiary')
+    comments = orm.relation('Comments')
 
     def __repr__(self):
         return f'<User> {self.id} Пользователь {self.id} {self.email}'
