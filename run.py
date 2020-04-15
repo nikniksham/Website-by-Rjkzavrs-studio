@@ -1,10 +1,10 @@
 import datetime
-
+import flask
 from flask import Flask, render_template, url_for, request
 from flask_login import LoginManager, login_required, logout_user, current_user, login_user
-from flask_restful import abort
+from flask_restful import abort, Api
 from werkzeug.utils import redirect
-from data import db_session
+from data import db_session, DevelopersDiaryResource
 from data.comments import Comments
 from data.users import User
 from data.publications import Publications
@@ -14,8 +14,12 @@ from data.forms import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secret_key_by_rjkzavr_1920"
+blueprint = flask.Blueprint('DevelopersDiaryApi', __name__, template_folder='templates')
 login_manager = LoginManager()
 login_manager.init_app(app)
+api = Api(app)
+api.add_resource(DevelopersDiaryResource.PublicationsResource, '/api/get_publications')
+api.add_resource(DevelopersDiaryResource.PublicationResource, '/api/get_publication/<int:developers_diary_publication_id>')
 
 
 def main(port=8000):
