@@ -20,7 +20,7 @@ login_manager.init_app(app)
 
 def main(port=8000):
     db_session.global_init("db/Followers_Rjkzavrs.sqlite")
-    print("http://127.0.0.1:8000/test/")
+    print("http://127.0.0.1:8000/account/")
     print('http://127.0.0.1:8000/DevelopersDiary')
     print('http://127.0.0.1:8000/DevelopersDiaryAdd')
     app.run(port=port)
@@ -88,6 +88,26 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+
+
+# Профиль аккаунта
+@app.route('/account/')
+def account():
+    if current_user.is_authenticated:
+        return render_template("account.html", title=f'Аккаунт {current_user.nickname}',
+                               style=url_for('static', filename='css/style.css'), user=current_user,
+                               bgimg=url_for('static', filename='img/background_img_1.png'))
+
+
+# Подтверждение удаления аккаунта
+@app.route('/delete_account/')
+def delete_account():
+    if current_user.is_authenticated:
+        return render_template("delete_account.html", title=f'Аккаунт {current_user.nickname}',
+                               style=url_for('static', filename='css/style.css'), user=current_user,
+                               bgimg=url_for('static', filename='img/background_img_1.png'))
+
+
 
 
 @app.route('/DevelopersDiaryAdd', methods=['GET', 'POST'])

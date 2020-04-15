@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="title">
+    <h1 class="title-text">Вы вошли в профиль {{user.nickname}}</h1>
+</div>
+<div>
+    <h2 class="wide-text">Ник: {{user.nickname}}</h2>
+    <h2 class="wide-text">Имя: {{user.name}}</h2>
+    <h2 class="wide-text">Фамилия: {{user.surname}}</h2>
+    <h2 class="wide-text">ID: {{user.id}}</h2>
+    <h2 class="wide-text">Email: {{user.email}}</h2>
+    <h2 class="wide-text">Права: {{user.status}}</h2>
+    <h2 class="wide-text">Возраст: {{user.age}}</h2>
+</div>
+<div class="navbar">
+    <div class="left-down-bar">
+        <a href="/delete_account/"><h2 class="red-wide-text">Удалить аккаунт</h2></a>
+    </div>
+    <div class="right-down-bar">
+        <a href="/logout/"><h2 class="orange-wide-text">Выйти из аккаунта</h2></a>
+        <a href="/"><h2 class="orange-wide-text">Редактировать</h2></a>
+    </div>
+</div>
+{% endblock %}

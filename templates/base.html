@@ -28,16 +28,16 @@
     </div>
     <div class="center-head">
         <div>
-            <a href=""><h4 class="asd">Главная</h4></a>
-            <a href=""><h4 class="asd">Игра</h4></a>
-            <a href=""><h4 class="asd">Дневник разработчиков</h4></a>
-            <a href=""><h4 class="asd">Форум</h4></a>
-            <a href=""><h4 class="asd">О нас</h4></a>
+            <a href="/" class="header-a"><h4 class="asd">Главная</h4></a>
+            <a href="/" class="header-a"><h4 class="asd">Игра</h4></a>
+            <a href="/DevelopersDiary" class="header-a"><h4 class="asd">Дневник разработчиков</h4></a>
+            <a href="/" class="header-a"><h4 class="asd">Форум</h4></a>
+            <a href="/" class="header-a"><h4 class="asd">О нас</h4></a>
         </div>
     </div>
     <div class="right-head">
         {% if current_user.is_authenticated %}
-        <a class="navbar-brand" href="/account"><h4 class="asd">{{ current_user.name }}</h4></a>
+        <a class="navbar-brand" href="/account"><h4 class="asd">{{ current_user.nickname }}</h4></a>
         {% else %}
         <a href="/login"><h4 class="asd">Войти</h4></a>
         <a href="/register"><h4 class="asd">Зарегестрироваться</h4></a>
