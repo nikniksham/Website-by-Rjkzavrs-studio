@@ -1,66 +1,27 @@
-<!doctype html>
-<html lang="ru">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
-    <style>
-          body {
-          {% if bgimg %}
-          background: #81d012 url({{bgimg}}); /* Цвет фона и путь к файлу */
-          {% else %}
-          background: #81d012 url(/static/img/background_img_1.png); /* Цвет фона и путь к файлу */
-          {% endif %}
-          background-repeat: no-repeat;
-          background-attachment: scroll;
-          }
+{% extends "base.html" %}
 
-
-    </style>
-    <link rel="stylesheet" href={{style}}>
-    <title>{{title}}</title>
-</head>
-<body>
-<header class="navbar navbar-light">
-    <div class="left-head">
-        <a href=""><h4 class="asd">RJKZAVRS STUDIO</h4></a>
-    </div>
-    <div class="center-head">
-        <div>
-            <a href=""><h4 class="asd">Главная</h4></a>
-            <a href=""><h4 class="asd">Игра</h4></a>
-            <a href=""><h4 class="asd">Дневник разработчиков</h4></a>
-            <a href=""><h4 class="asd">Форум</h4></a>
-            <a href=""><h4 class="asd">О нас</h4></a>
+{% block content %}
+<div class="title">
+    <h1 class="title-text">Дневник разработчиков</h1>
+</div>
+<div>
+    <div class="publication-block-header">
+        <div class="right-column-block">
+            <a href="/">
+                <h1 class="title-text">Мы сделали иргу</h1>
+                <h3 class="asd">В этой публикации очень много текста потому-что он полностью не влезет на заголовок.
+                    Поэтому
+                    вам
+                    придётся
+                    зайти чтобы дочитать. Много текста значит много. Много текста значит много. Много текста значит
+                    много.
+                    Много
+                    текста значит много. Много текста значит много. Много текста значит много. Много текста значит
+                    много.
+                    Много
+                    текста значит много. Много текста значит много. </h3>
+            </a>
         </div>
     </div>
-    <div class="right-head">
-        {% if current_user.is_authenticated %}
-        <a class="navbar-brand" href="/account"><h4 class="asd">{{ current_user.name }}</h4></a>
-        {% else %}
-        <a href="/login"><h4 class="asd">Войти</h4></a>
-        <a href="/login"><h4 class="asd">Зарегестрироваться</h4></a>
-        {% endif %}
-    </div>
-</header>
-<main role="main">
-    <div class="main-block">
-        <div class="center-column">
-            <div class="center-column-block">
-                {% block content %}{% endblock %}
-            </div>
-        </div>
-        {% if navigation %}
-        <div class="right-column">
-            <div class="right-column-block">
-                {% block navigation %}{% endblock %}
-            </div>
-        </div>
-        {% endif %}
-    </div>
-</main>
-</body>
-</html>
+</div>
+{% endblock %}

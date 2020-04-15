@@ -17,8 +17,6 @@
           background-repeat: no-repeat;
           background-attachment: scroll;
           }
-
-
     </style>
     <link rel="stylesheet" href={{style}}>
     <title>{{title}}</title>
@@ -42,7 +40,7 @@
         <a class="navbar-brand" href="/account"><h4 class="asd">{{ current_user.name }}</h4></a>
         {% else %}
         <a href="/login"><h4 class="asd">Войти</h4></a>
-        <a href="/login"><h4 class="asd">Зарегестрироваться</h4></a>
+        <a href="/register"><h4 class="asd">Зарегестрироваться</h4></a>
         {% endif %}
     </div>
 </header>
