@@ -70,6 +70,15 @@ p {
     text-align: left;
 }
 
+header {
+    margin-bottom: 170px;
+}
+
+main {
+    align: center;
+    width: 100%;
+}
+
 a {
     text-decoration: none;
     float: left;
@@ -77,6 +86,14 @@ a {
 
 a:hover{
     text-decoration: none;
+}
+
+div.main-block {
+    width: 85%;
+    display: flex;
+    margin-left: 15%;
+    align: center;
+    margin-bottom: 70px;
 }
 
 .asd {
@@ -105,4 +122,34 @@ div.right-head {
     -webkit-flex-direction: row-reverse;
     display: flex;
     flex-direction: row-reverse;
+}
+
+div.center-column {
+    border-radius: 10px;
+    opacity: 1;
+    background: #fff;
+    align: left;
+    width: 76%;
+    margin-left: 2%;
+    margin-right: 20px;
+    opacity: 0.9;
+}
+
+div.center-column-block {
+    padding: 30px 20px;
+}
+
+div.right-column {
+    border-radius: 10px;
+    opacity: 1;
+    background: #fff;
+    align: right;
+    width: 20%;
+    margin-right: 2%;
+    opacity: 0.9;
+    align-self: flex-start;
+}
+
+div.right-column-block {
+    padding: 15px 5px;
 }

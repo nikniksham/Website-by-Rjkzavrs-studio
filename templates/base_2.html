@@ -17,6 +17,8 @@
           background-repeat: no-repeat;
           background-attachment: scroll;
           }
+
+
     </style>
     <link rel="stylesheet" href={{style}}>
     <title>{{title}}</title>
@@ -44,8 +46,21 @@
         {% endif %}
     </div>
 </header>
-<main role="main" class="container">
-    {% block content %}{% endblock %}
+<main role="main">
+    <div class="main-block">
+        <div class="center-column">
+            <div class="center-column-block">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        {% if navigation %}
+        <div class="right-column">
+            <div class="right-column-block">
+                {% block navigation %}{% endblock %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </main>
 </body>
 </html>
