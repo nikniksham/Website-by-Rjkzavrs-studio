@@ -24,6 +24,7 @@ api.add_resource(DevelopersDiaryResource.PublicationResource, '/api/get_publicat
 
 def main(port=8000):
     db_session.global_init("db/Followers_Rjkzavrs.sqlite")
+    print("http://127.0.0.1:8000/about/")
     print('http://127.0.0.1:8000/DevelopersDiary')
     print('http://127.0.0.1:8000/DevelopersDiaryAdd')
     app.run(port=port)
@@ -35,11 +36,13 @@ def register():
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация', form=form, message="Пароли не совпадают",
+                                   style=url_for('static', filename='css/style.css'),
                                    bgimg=url_for('static', filename='img/background_img_1.png'))
         session = db_session.create_session()
         if session.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form, message="Такой rjkzavrik уже существует",
+                                   style=url_for('static', filename='css/style.css'),
                                    bgimg=url_for('static', filename='img/background_img_1.png'))
         user = User()
         user.name = form.name.data
@@ -55,6 +58,7 @@ def register():
         session.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form,
+                           style=url_for('static', filename='css/style.css'),
                            bgimg=url_for('static', filename='img/background_img_1.png'))
 
 
@@ -75,8 +79,10 @@ def login():
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template('login.html', message="Неправильный логин или пароль", form=form,
+                               style=url_for('static', filename='css/style.css'),
                                bgimg=url_for('static', filename='img/background_img_1.png'))
     return render_template('login.html', title='Авторизация', form=form,
+                           style=url_for('static', filename='css/style.css'),
                            bgimg=url_for('static', filename='img/background_img_1.png'))
 
 
@@ -86,6 +92,24 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+
+
+# Профиль аккаунта
+@app.route('/account/')
+def account():
+    if current_user.is_authenticated:
+        return render_template("account.html", title=f'Аккаунт {current_user.nickname}',
+                               style=url_for('static', filename='css/style.css'), user=current_user,
+                               bgimg=url_for('static', filename='img/background_img_1.png'))
+
+
+# Подтверждение удаления аккаунта
+@app.route('/delete_account/')
+def delete_account():
+    if current_user.is_authenticated:
+        return render_template("delete_account.html", title=f'Аккаунт {current_user.nickname}',
+                               style=url_for('static', filename='css/style.css'), user=current_user,
+                               bgimg=url_for('static', filename='img/background_img_1.png'))
 
 
 @app.route('/DevelopersDiaryAdd', methods=['GET', 'POST'])
@@ -98,6 +122,7 @@ def add_developers_diary():
             if session.query(DevelopersDiary).filter(DevelopersDiary.header == form.header.data).first():
                 return render_template('DevelopersDiaryAdd.html', title='Создание записи', form=form,
                                        message="Запись с таким же названием уже существует",
+                                       style=url_for('static', filename='css/style.css'),
                                        bgimg=url_for('static', filename='img/background_img_1.png'))
             session.commit()
             session = db_session.create_session()
@@ -111,6 +136,7 @@ def add_developers_diary():
             session.commit()
             return redirect('/DevelopersDiary')
         return render_template('DevelopersDiaryAdd.html', title='Создание записи', form=form,
+                               style=url_for('static', filename='css/style.css'),
                                bgimg=url_for('static', filename='img/background_img_1.png'))
     else:
         return redirect('/DevelopersDiary')
@@ -143,7 +169,8 @@ def developers_diary_change(id):
             else:
                 abort(404)
         return render_template('DevelopersDiaryAdd.html', title='Редактирование записи в дневнике разработчиков',
-                               form=form, bgimg=url_for('static', filename='img/background_img_1.png'))
+                               form=form, style=url_for('static', filename='css/style.css'),
+                               bgimg=url_for('static', filename='img/background_img_1.png'))
     else:
         abort(404)
 
@@ -164,6 +191,11 @@ def developers_diary_delete(id):
         abort(404)
 
 
+@app.route("/test/")
+def test():
+    return render_template("base_2.html", title="xnjnj", style=url_for('static', filename='css/style.css'))
+
+
 @app.route("/DevelopersDiary")
 def list_developers_diary():
     status = 0
@@ -181,6 +213,14 @@ def list_developers_diary():
 def website_main():
     return render_template('main.html', title='Главная страница', style=url_for('static', filename='css/style.css'),
                            bgimg=url_for('static', filename='img/background_img_1.png'))
+
+
+# О нас
+@app.route("/about/")
+def about():
+    return render_template("about.html", title="О RJKZAVRS STUDIO", style=url_for('static', filename='css/style.css'),
+                           bgimg=url_for('static', filename='img/background_img_1.png'))
+
 
 
 if __name__ == '__main__':
