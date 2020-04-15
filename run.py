@@ -42,7 +42,7 @@ def website_test():
 # Стартовая страница
 @app.route("/")
 def website_main():
-    return render_template('main.html', title='Главная страница', style=url_for('static', filename='css/style.css'), bgimg=url_for('static', filename='img/background_img_1.png'))
+    return render_template('main.html', title='Главная страница', style=url_for('static', filename='css/style.css'))
 
 
 if __name__ == '__main__':
