@@ -20,7 +20,7 @@ login_manager.init_app(app)
 
 def main(port=8000):
     db_session.global_init("db/Followers_Rjkzavrs.sqlite")
-    print("http://127.0.0.1:8000/account/")
+    print("http://127.0.0.1:8000/about/")
     print('http://127.0.0.1:8000/DevelopersDiary')
     print('http://127.0.0.1:8000/DevelopersDiaryAdd')
     app.run(port=port)
@@ -106,8 +106,6 @@ def delete_account():
         return render_template("delete_account.html", title=f'Аккаунт {current_user.nickname}',
                                style=url_for('static', filename='css/style.css'), user=current_user,
                                bgimg=url_for('static', filename='img/background_img_1.png'))
-
-
 
 
 @app.route('/DevelopersDiaryAdd', methods=['GET', 'POST'])
@@ -211,6 +209,14 @@ def list_developers_diary():
 def website_main():
     return render_template('main.html', title='Главная страница', style=url_for('static', filename='css/style.css'),
                            bgimg=url_for('static', filename='img/background_img_1.png'))
+
+
+# О нас
+@app.route("/about/")
+def about():
+    return render_template("about.html", title="О RJKZAVRS STUDIO", style=url_for('static', filename='css/style.css'),
+                           bgimg=url_for('static', filename='img/background_img_1.png'))
+
 
 
 if __name__ == '__main__':

@@ -10,8 +10,18 @@
     <h2 class="wide-text">Фамилия: {{user.surname}}</h2>
     <h2 class="wide-text">ID: {{user.id}}</h2>
     <h2 class="wide-text">Email: {{user.email}}</h2>
-    <h2 class="wide-text">Права: {{user.status}}</h2>
-    <h2 class="wide-text">Возраст: {{user.age}}</h2>
+    {% if user.status == 0%}
+    <h2 class="wide-text">Права: Пользоватедь</h2>
+    {% elif user.status == 1%}
+    <h2 class="wide-text">Права: разработчик</h2>
+    {% elif user.status > 9%}
+    <h2 class="wide-text">Права: Царь. Этим всё сказано!</h2>
+    {% elif user.status > 1%}
+    <h2 class="wide-text">Права: Админ.</h2>
+    {% else %}
+    <h2 class="wide-text">Права: Ты кто такой? Ты как сюда попал?</h2>
+    {% endif %}
+    <h2 class="wide-text">Возраст: {{user.age}} лет</h2>
 </div>
 <div class="navbar">
     <div class="left-down-bar">
