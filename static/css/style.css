@@ -136,6 +136,40 @@ div.publication-block-header {
     margin: 0 5px;
 }
 
+.diary-title {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: #000;
+    text-align: left;
+    padding: 5px 5px;
+    margin: 0 5px;
+    text-align: left;
+}
+
+.diary-text {
+    font-size: 25px;
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: #000;
+    position: relative;
+    padding: 5px 5px;
+    margin: 0 5px;
+}
+
+.diary-left-title {
+    width: 70%;
+}
+
+.diary-right-title {
+    width: 30%;
+    display: -webkit-flex;
+    -webkit-flex-direction: row-reverse;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
 .red-wide-text {
     font-family: 'Comfortaa', cursive;
     font-weight: 100;
@@ -174,7 +208,6 @@ div.center-head {
     display: flex;
     align: center;
 }
-
 
 div.right-head {
     width: 25%;
