@@ -112,12 +112,13 @@ def account():
 
 
 # Подтверждение удаления аккаунта
-@app.route('/delete_account/')
+@app.route('/delete_account/', methods=['GET', 'POST'])
+@login_required
 def delete_account():
-    if current_user.is_authenticated:
-        return render_template("delete_account.html", title=f'Аккаунт {current_user.nickname}',
-                               style=url_for('static', filename='css/style.css'), user=current_user,
-                               bgimg=url_for('static', filename='img/background_img_1.png'))
+    form = DeleteForm()
+    return render_template("delete_account.html", title=f'Аккаунт {current_user.nickname}',
+                           style=url_for('static', filename='css/style.css'), user=current_user,
+                           bgimg=url_for('static', filename='img/background_img_1.png'))
 
 
 @app.route('/DevelopersDiaryAdd/', methods=['GET', 'POST'])
@@ -234,12 +235,6 @@ def developers_diary(id):
     return redirect('/DevelopersDiary')
 
 
-@app.route("/delete_user/")
-@login_required
-def delete_user():
-    pass
-
-
 # Стартовая страница
 @app.route("/")
 def website_main():
@@ -255,7 +250,7 @@ def about():
 
 
 if __name__ == '__main__':
-    main()
+    main(port=80)
     create_new_db = False
     if create_new_db:
         db_session.global_init("db/Followers_Rjkzavrs.sqlite")
