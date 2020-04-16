@@ -1,41 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div align="center">
-    <div>
-        <h2>Записи из дневника разработчиков</h2>
+<div class="navbar">
+    <div class="title">
+        <h1 class="title-text">{{publication.header}}</h1>
     </div>
-    {% for publication in ds_diary %}
-    <div class="text">
-        {% if status >= publication.availability_status%}
-        <h2>Запись #{{publication.id}}</h2>
-        {% endif %}
-        {% if status >= 2 %}
-        <div>
-            <a href="/developers_diary_change/{{ publication.id }}" class="btn btn-warning">Изменить</a>
-            <a href="/developers_diary_delete/{{ publication.id }}" class="btn btn-danger">Удалить</a>
-        </div>
-        <br>
-        <br>
-        {% endif %}
-        {% if status >= publication.availability_status%}
-        <div class="text">
-            <table>
-                <tr>
-                    <td>
-                        <h1>{{publication.header}}</h1>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>{{publication.body}}</p>
-                    </td>
-                </tr>
-
-            </table>
-        </div>
-        {% endif %}
-        {% endfor %}
+    <div class="title">
+        <p class="diary-text">Дата создания: {{publication.created_date}}</p>
     </div>
-    {% endblock %}
 </div>
+<div>
+    <p class="diary-text">
+        {% for text in publication.body.split("\n") %}
+        {{text}}<br>
+        {% endfor %}
+    </p>
+</div>
+{% endblock %}

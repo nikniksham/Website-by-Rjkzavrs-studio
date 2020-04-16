@@ -14,7 +14,7 @@
     <h2 class="wide-text">Права: Пользоватедь</h2>
     {% elif user.status == 1%}
     <h2 class="wide-text">Права: разработчик</h2>
-    {% elif user.status > 9%}
+    {% elif user.status > 9 and user.status %}
     <h2 class="wide-text">Права: Царь. Этим всё сказано!</h2>
     {% elif user.status > 1%}
     <h2 class="wide-text">Права: Админ.</h2>
