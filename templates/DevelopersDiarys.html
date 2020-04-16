@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="title">
+    {% if status >= 2%}
+    <div class="navbar">
+        <div>
+            <h1 class="title-text">Записи из дневника разработчиков</h1>
+        </div>
+        <div>
+            <a href="/DevelopersDiaryAdd" class="btn btn-warning diary-text">Добавить новость</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="navbar">
+        <h1 class="title-text">Записи из дневника разработчиков</h1>
+    </div>
+    {% endif %}
+</div>
+<div>
+    {% for publication in ds_diary %}
+    {% if status >= publication.availability_status %}
+    <div class="publication-block-header">
+        <div class="right-column-block">
+            <div class="navbar">
+                <div class="diary-left-title">
+                    <h1 class="diary-title">
+                        {{publication.header}}
+                    </h1>
+                </div>
+                {% if status >= 2 %}
+                <div class="diary-right-title">
+                    <a href="/developers_diary_change/{{ publication.id }}"
+                       class="btn btn-warning diary-text">Изменить</a>
+                    <a href="/developers_diary_delete/{{ publication.id }}"
+                       class="btn btn-danger diary-text">Удалить</a>
+                </div>
+                {% endif %}
+            </div>
+            <div>
+                <p class="diary-text">
+                    {{publication.body.split("\n")[0]}}
+                </p>
+            </div>
+            <div class="navbar">
+                <div>
+                    <a href="/DevelopersDiaryPublication/{{publication.id}}">
+                        <p class="diary-text">Подробнее..</p>
+                    </a>
+                </div>
+                {% if status >= 2 %}
+                <div>
+                    <p class="diary-text">Статус доступа: {{publication.availability_status}}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

@@ -61,10 +61,207 @@ td {
     padding: 8px;
 }
 
-p, a {
-    float: left;
+p {
+
+    text-decoration: none;
 }
 
 .text {
     text-align: left;
+}
+
+header {
+    margin-bottom: 170px;
+}
+
+main {
+    align: center;
+    width: 100%;
+}
+
+.header-a {
+    float: left;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover{
+    text-decoration: none;
+}
+
+div.main-block {
+    width: 85%;
+    display: flex;
+    margin-left: 15%;
+    align: center;
+    margin-bottom: 70px;
+}
+
+div.publication-block-header {
+    flex-basis: 98%;
+    background: #efefef;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+.asd {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: #000;
+    position: relative;
+    padding: 5px 5px;
+    margin: 0 5px;
+}
+
+.title-text {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: #000;
+    position: relative;
+    padding: 5px 5px;
+    margin: 0 5px;
+}
+
+.wide-text {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: #000;
+    position: relative;
+    padding: 20px 5px;
+    margin: 0 5px;
+}
+
+.diary-title {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: #000;
+    text-align: left;
+    padding: 5px 5px;
+    margin: 0 5px;
+    text-align: left;
+}
+
+.diary-text {
+    font-size: 25px;
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: #000;
+    position: relative;
+    padding: 5px 5px;
+    margin: 0 5px;
+}
+
+.diary-left-title {
+    width: 70%;
+}
+
+.diary-right-title {
+    width: 30%;
+    display: -webkit-flex;
+    -webkit-flex-direction: row-reverse;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.red-wide-text {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: red;
+    position: relative;
+    padding: 20px 5px;
+    margin: 0 5px;
+}
+
+.green-wide-text {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: green;
+    position: relative;
+    padding: 20px 5px;
+    margin: 0 5px;
+}
+
+.orange-wide-text {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: orange;
+    position: relative;
+    padding: 20px 5px;
+    margin: 0 5px;
+}
+
+div.left-head {
+    width: 25%;
+}
+
+div.center-head {
+    display: flex;
+    align: center;
+}
+
+div.right-head {
+    width: 25%;
+    display: -webkit-flex;
+    -webkit-flex-direction: row-reverse;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+div.left-down-bar {
+    width: 25%;
+    display: flex;
+}
+
+div.right-down-bar {
+    width: 75%;
+    display: -webkit-flex;
+    -webkit-flex-direction: row-reverse;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+div.center-column {
+    border-radius: 10px;
+    opacity: 1;
+    background: #fff;
+    align: left;
+    width: 76%;
+    margin-left: 2%;
+    margin-right: 20px;
+    opacity: 0.9;
+}
+
+div.center-column-block {
+    padding: 30px 20px;
+}
+
+div.right-column {
+    border-radius: 10px;
+    opacity: 1;
+    background: #fff;
+    align: right;
+    width: 20%;
+    margin-right: 2%;
+    opacity: 0.9;
+    align-self: flex-start;
+}
+
+div.right-column-block {
+    padding: 15px 5px;
+}
+
+div.title {
+    display: block;
+    text-align: center;
+    margin-bottom: 50px;
 }

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="navbar">
+    <div class="title">
+        <h1 class="title-text">{{publication.header}}</h1>
+    </div>
+    <div class="title">
+        <p class="diary-text">Дата создания: {{publication.created_date}}</p>
+    </div>
+</div>
+<div>
+    <p class="diary-text">
+        {% for text in publication.body.split("\n") %}
+        {{text}}<br>
+        {% endfor %}
+    </p>
+</div>
+{% endblock %}

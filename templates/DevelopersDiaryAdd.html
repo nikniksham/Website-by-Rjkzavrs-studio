@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Создание записи в "дневнике разработчиков"</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.header.label }}<br>
+        {{ form.header(class="form-control") }}<br>
+        {% for error in form.header.errors %}
+            <p class="alert alert-danger" role="alert">{{ error }}</p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.body.label }}<br>
+        {{ form.body(class="form-control") }}<br>
+        {% for error in form.body.errors %}
+            <p class="alert alert-danger" role="alert">{{ error }}</p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.availability_status.label }}<br>
+        {{ form.availability_status(class="form-control") }}<br>
+        {% for error in form.availability_status.errors %}
+            <p class="alert alert-danger" role="alert">{{ error }}</p>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    <div>{{ message }}</div>
+</form>
+{% endblock %}
