@@ -97,6 +97,7 @@ def account():
         return render_template("account.html", title=f'Аккаунт {current_user.nickname}',
                                style=url_for('static', filename='css/style.css'), user=current_user,
                                bgimg=url_for('static', filename='img/background_img_1.png'))
+    return redirect('/')
 
 
 # Подтверждение удаления аккаунта
@@ -108,7 +109,7 @@ def delete_account():
                                bgimg=url_for('static', filename='img/background_img_1.png'))
 
 
-@app.route('/DevelopersDiaryAdd', methods=['GET', 'POST'])
+@app.route('/DevelopersDiaryAdd/', methods=['GET', 'POST'])
 @login_required
 def add_developers_diary():
     if current_user.status >= 1:
@@ -138,7 +139,7 @@ def add_developers_diary():
         return redirect('/DevelopersDiary')
 
 
-@app.route('/developers_diary_change/<int:id>', methods=['GET', 'POST'])
+@app.route('/developers_diary_change/<int:id>/', methods=['GET', 'POST'])
 @login_required
 def developers_diary_change(id):
     a_s = {0: 'Все пользователи', 1: 'Только зарегестрированные и выше', 2: 'Только разработчики'}
@@ -147,6 +148,7 @@ def developers_diary_change(id):
         if request.method == "GET":
             session = db_session.create_session()
             ds_diary = session.query(DevelopersDiary).filter(DevelopersDiary.id == id).first()
+            session.close()
             if ds_diary:
                 form.header.data = ds_diary.header
                 form.body.data = ds_diary.body
@@ -171,7 +173,7 @@ def developers_diary_change(id):
         abort(404)
 
 
-@app.route('/developers_diary_delete/<int:id>', methods=['GET', 'POST'])
+@app.route('/developers_diary_delete/<int:id>/', methods=['GET', 'POST'])
 @login_required
 def developers_diary_delete(id):
     if current_user.status >= 1:
@@ -192,16 +194,33 @@ def test():
     return render_template("base_2.html", title="xnjnj", style=url_for('static', filename='css/style.css'))
 
 
-@app.route("/DevelopersDiary")
+@app.route("/DevelopersDiary/")
 def list_developers_diary():
     status = 0
     if current_user.is_authenticated:
         status = current_user.status + 1
     session = db_session.create_session()
     ds_diary = session.query(DevelopersDiary).all()
-    return render_template("/DevelopersDiary.html", ds_diary=ds_diary, status=status, user=current_user,
+    session.close()
+    return render_template("/DevelopersDiarys.html", ds_diary=ds_diary, status=status, user=current_user,
                            style=url_for('static', filename='css/style.css'),
                            bgimg=url_for('static', filename='img/background_img_1.png'))
+
+
+@app.route("/DevelopersDiaryPublication/<int:id>/")
+def developers_diary(id):
+    status = 0
+    if current_user.is_authenticated:
+        status = current_user.status + 1
+    session = db_session.create_session()
+    ds_diary = session.query(DevelopersDiary).filter(DevelopersDiary.id == id).first()
+    session.close()
+    ds_diary.created_date = ":".join(str(ds_diary.created_date).split(":")[:-1])
+    if status >= ds_diary.availability_status:
+        return render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
+                               style=url_for('static', filename='css/style.css'),
+                               bgimg=url_for('static', filename='img/background_img_1.png'))
+    return redirect('/DevelopersDiary')
 
 
 # Стартовая страница
@@ -216,7 +235,6 @@ def website_main():
 def about():
     return render_template("about.html", title="О RJKZAVRS STUDIO", style=url_for('static', filename='css/style.css'),
                            bgimg=url_for('static', filename='img/background_img_1.png'))
-
 
 
 if __name__ == '__main__':
