@@ -136,16 +136,17 @@ def account():
     return redirect('/')
 
 
-# Подтверждение удаления аккаунта
 @app.route('/delete_account/', methods=['GET', 'POST'])
 @login_required
 def delete_account():
     form = DeleteForm()
     if form.submit.data:
         if current_user.check_password(form.password.data):
-            email = current_user.email
+            user = current_user
             logout_user()
-            delete(f'http://localhost:8000/api/user/{email}/{form.password.data}').json()
+            session = db_session.create_session()
+            session.delete(user)
+            session.commit()
             return redirect('/')
         return render_template("Delete_User.html", title=f'Аккаунт {current_user.nickname}', message='Пароль неверный',
                                style=url_for('static', filename='css/style.css'), user=current_user, form=form,
