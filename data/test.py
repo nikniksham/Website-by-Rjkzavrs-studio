@@ -3,8 +3,8 @@ from requests import get, post, delete, put
 test_version_first = False
 test_version_second = True
 
-link_website = 'https://rjkzavrs-studio.herokuapp.com/'
-link_website_2 = 'http://localhost:8000/'
+link_website_2 = 'https://rjkzavrs-studio.herokuapp.com/'
+link_website = 'http://localhost:8000/'
 test_get = True
 test_post = True
 test_delete = True
