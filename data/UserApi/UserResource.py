@@ -1,5 +1,6 @@
+import datetime
 from flask import jsonify
-from flask_restful import abort, Resource
+from flask_restful import Resource, abort
 from data import db_session
 from data.users import User
 from data.UserApi.parser_user_api import parser
@@ -7,15 +8,31 @@ from data.UserApi.put_parser_user_api import put_parser
 from data.UserApi.put_parser_user_admin_api import put_parser_admin
 
 
+def raise_error(error):
+    abort(400, message=error)
+
+
+def check_password(password):
+    errors = {0: 'Ok', 1: 'The password length must be 8 or more', 2: 'The password must contain at least 1 letter',
+              3: 'The password must contain at least 1 digit'}
+    if not len(password) >= 8:
+        return False, errors[1]
+    if password.isdigit():
+        return False, errors[2]
+    if password.isalpha():
+        return False, errors[3]
+    return True, errors[0]
+
+
 def check_admin(email, password, need_status=1):
     session = db_session.create_session()
     admin = session.query(User).filter(User.email == email).first()
     if not admin:
-        abort(404, message=f"User {email} not found")
+        raise_error(f"User {email} not found")
     if not admin.check_password(password):
-        abort(404, message="Password don't match")
-    if not admin.status >= need_status:
-        abort(401, message="You don't have permissions for this")
+        raise_error("Password don't match")
+    if not admin.status < need_status:
+        raise_error("You don't have permissions for this")
     return admin, session
 
 
@@ -23,7 +40,7 @@ def abort_if_user_not_found(user_id):
     session = db_session.create_session()
     user = session.query(User).get(user_id)
     if not user:
-        abort(404, message=f"User {user_id} not found")
+        raise_error(f"User {user_id} not found")
     return user, session
 
 
@@ -31,9 +48,9 @@ def check_user(email, password):
     session = db_session.create_session()
     user = session.query(User).filter(User.email == email).first()
     if not user:
-        abort(404, message=f"User {email} not found")
+        raise_error(f"User {email} not found")
     if not user.check_password(password):
-        abort(404, message="Password don't match")
+        raise_error("Password don't match")
     return user, session
 
 
@@ -53,28 +70,31 @@ class UserResource(Resource):
     def put(self, email, password):
         user, session = check_user(email, password)
         args = put_parser.parse_args()
+        if args['password'] is not None:
+            res = check_password(args['password'])
+            if not res[0]:
+                raise_error(res[1])
         for key in list(args.keys()):
             if args[key] is not None:
                 if key == 'id':
-                    if session.query(User).filter(User.nickname == args["id"]):
-                        abort(400, message="This id already exists")
+                    if session.query(User).filter(User.id == args["id"]):
+                        raise_error("This id already exists")
                     user.id = args['id']
                 if key == 'surname':
                     user.surname = args['surname']
                 if key == 'name':
                     user.name = args['name']
                 if key == 'age':
-                    print(args['age'])
                     user.age = args['age']
                 if key == 'nickname':
                     if session.query(User).filter(User.nickname == args["nickname"]):
-                        abort(400, message="This nickname already exists")
+                        raise_error("This nickname already exists")
                     user.nickname = args['nickname']
                 if key == 'background_image_id':
                     user.background_image_id = args['background_image_id']
                 if key == 'email':
                     if session.query(User).filter(User.nickname == args["email"]):
-                        abort(400, message="This email already exists")
+                        raise_error("This email already exists")
                     user.email = args['email']
                 if key == 'password':
                     user.set_password(args['password'])
@@ -114,14 +134,18 @@ class UserResourceAdmin(Resource):
         args = put_parser_admin.parse_args()
         if args['status'] is not None:
             if args['status'] > admin.status:
-                abort(401, message="You don't have permissions for this")
+                raise_error("You don't have permissions for this")
             if args['status'] < 0:
-                abort(400, message="Invalid status")
+                raise_error("Invalid status")
+        if args['password'] is not None:
+            res = check_password(args['password'])
+            if not res[0]:
+                raise_error(res[1])
         for key in list(args.keys()):
             if args[key] is not None:
                 if key == 'id':
-                    if session.query(User).filter(User.nickname == args["id"]):
-                        abort(400, message="This id already exists")
+                    if session.query(User).filter(User.id == args["id"]):
+                        raise_error("This id already exists")
                     user.id = args['id']
                 if key == 'surname':
                     user.surname = args['surname']
@@ -131,13 +155,13 @@ class UserResourceAdmin(Resource):
                     user.age = args['age']
                 if key == 'nickname':
                     if session.query(User).filter(User.nickname == args["nickname"]):
-                        abort(400, message="This nickname already exists")
+                        raise_error("This nickname already exists")
                     user.nickname = args['nickname']
                 if key == 'background_image_id':
                     user.background_image_id = args['background_image_id']
                 if key == 'email':
                     if session.query(User).filter(User.nickname == args["email"]):
-                        abort(400, message="This email already exists")
+                        raise_error("This email already exists")
                     user.email = args['email']
                 if key == 'status':
                     user.status = args['status']
@@ -152,15 +176,18 @@ class CreateUserResource(Resource):
         args = parser.parse_args()
         if not all(key in args for key in
                    ['id', 'surname', 'name', 'age', 'nickname', 'email', 'password']):
-            return abort(400, message='Missing some keys to create, you need keys to create:'
-                                      'id, surname, name, age, nickname, email, password')
+            raise_error('Missing some keys to create, you need keys to create:'
+                        'id, surname, name, age, nickname, email, password')
         session = db_session.create_session()
         if session.query(User).get(args['id']):
-            abort(400, message='Id already exists')
+            raise_error('Id already exists')
         if session.query(User).filter(User.email == args['email']).first():
-            abort(400, message="This email already exists")
+            raise_error("This email already exists")
         if session.query(User).filter(User.email == args['nickname']).first():
-            abort(400, message="This nickname already exists")
+            raise_error("This nickname already exists")
+        res = check_password(args['password'])
+        if not res[0]:
+            raise_error(res[1])
         user = User()
         user.id = args['id']
         user.name = args['name']
@@ -171,6 +198,7 @@ class CreateUserResource(Resource):
         user.email = args['email']
         user.background_image_id = 0
         user.set_password(args['password'])
+        user.created_date = datetime.datetime.now()
         session.add(user)
         session.commit()
         return jsonify({'success': 'OK'})

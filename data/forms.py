@@ -44,7 +44,9 @@ class EditAccountForm(FlaskForm):
     nickname = StringField('Никнейм', validators=[DataRequired()])
     age = StringField('Возраст', validators=[DataRequired()])
     choices = [(0, 'Герои на первом плане'), (1, '"Логотип" Обои'), (2, 'Гг'), (3, 'Игра')]
-    background_image_id = SelectField('Доступ к публикации', choices=choices, validators=[DataRequired()], default=choices[0])
+    background_image_id = SelectField('Выбор заднего фона', choices=choices, validators=[DataRequired()],
+                                      default=choices[0])
+    submit = SubmitField("Подтвердить")
 
 
 class DeleteForm(FlaskForm):

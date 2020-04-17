@@ -1,1 +1,1 @@
-from . import users, publications, developers_diary, products, comments
+from . import users, publications, developers_diary, products, comments, documentation
