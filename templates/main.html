@@ -1,4 +1,33 @@
 {% extends "base.html" %}
 
+
 {% block content %}
+<div class="title">
+    <h1 class="title-text">Главная страница</h1>
+</div>
+<div>
+    <p class="diary-text">
+        Все ваши данные хранящиеся на сайте могут пропасть в любой момент!<br>
+        У этого сайта есть API вы можете ознакомиться с документацией в соответствующей вкладке.<br>
+        Также на этом сайте есть дневник разработчиков в котором вы можете прочитать про разработку игры на Python<br>
+        Есть форум на котором вы може общаться с другими людьми (пока-что нет)
+    </p>
+</div>
+{% endblock %}
+
+{% block navigation %}
+<div>
+    <div class="right-title-block">
+        <h2 class="asd">Полезные ссылки</h2>
+    </div>
+    <p class="diary-text">Здесь должны быть ссылки<br>
+        Но их пока что нет<br>
+        Но они будут!
+    </p>
+    <div class="right-title-block">
+        <h2 class="asd">Для разработчиков</h2>
+    </div>
+    <a href="/documentation/API/"><p class="diary-text">Документация API</p></a>
+    <a href="/documentation/website/"><p class="diary-text">О том как устроен сайт</p></a>
+</div>
 {% endblock %}

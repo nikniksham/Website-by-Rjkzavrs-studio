@@ -241,11 +241,19 @@ def developers_diary(id):
     return redirect('/DevelopersDiary')
 
 
+@app.route("/documentation/<resource>/")
+def documentation(resource):
+    data = {"API": ["Тестовая документация", "save_1.html", "navigation_1.html"], "website": ["", ""]}
+    return render_template("documentation.html", navigation=True, style=url_for('static', filename='css/style.css'),
+                           title='Документация', content=data[resource][1], content_navigation=data[resource][2],
+                           content_title=data[resource][0])
+
+
 # Стартовая страница
 @app.route("/")
 def website_main():
     return render_template('main.html', title='Главная страница', style=url_for('static', filename='css/style.css'),
-                           bgimg=get_image_profile(current_user))
+                           bgimg=get_image_profile(current_user), navigation=True)
 
 
 # О нас
@@ -256,7 +264,7 @@ def about():
 
 
 if __name__ == '__main__':
-    main()
+    main(port=5000)
     create_new_db = False
     if create_new_db:
         db_session.global_init("Followers_Rjkzavrs.sqlite")
