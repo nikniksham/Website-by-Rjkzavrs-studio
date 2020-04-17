@@ -14,6 +14,7 @@ from data.forms import *
 from data.UserApi.UserResource import CreateUserResource, UserResourceAdmin, UserListResourceAdmin, UserResource
 
 app = Flask(__name__)
+db_session.global_init("Followers_Rjkzavrs.sqlite")
 app.config['SECRET_KEY'] = "secret_key_by_rjkzavr_1920"
 blueprint = flask.Blueprint('UserApi', __name__, template_folder='templates')
 login_manager = LoginManager()
@@ -33,7 +34,6 @@ def get_image_profile(user):
 
 
 def main(port=8000):
-    db_session.global_init("Followers_Rjkzavrs.sqlite")
     print("http://127.0.0.1:8000/about/")
     print('http://127.0.0.1:8000/DevelopersDiary')
     print('http://127.0.0.1:8000/DevelopersDiaryAdd')
