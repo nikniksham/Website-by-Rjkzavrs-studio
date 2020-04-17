@@ -35,3 +35,20 @@ class DevelopersDiaryForm(FlaskForm):
     choices = [(0, 'Все пользователи'), (1, 'Только зарегестрированные и выше'), (2, 'Только разработчики')]
     availability_status = SelectField('Доступ к публикации', choices=choices, validators=[DataRequired()], default=choices[0])
     submit = SubmitField("Готово")
+
+
+class EditAccountForm(FlaskForm):
+    email = EmailField('Почта', validators=[DataRequired()])
+    name = StringField('Имя', validators=[DataRequired()])
+    surname = StringField('Фамилия', validators=[DataRequired()])
+    nickname = StringField('Никнейм', validators=[DataRequired()])
+    age = StringField('Возраст', validators=[DataRequired()])
+    choices = [(0, 'Герои на первом плане'), (1, '"Логотип" Обои'), (2, 'Гг'), (3, 'Игра')]
+    background_image_id = SelectField('Выбор заднего фона', choices=choices, validators=[DataRequired()],
+                                      default=choices[0])
+    submit = SubmitField("Подтвердить")
+
+
+class DeleteForm(FlaskForm):
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    submit = SubmitField('Подтвердить')
