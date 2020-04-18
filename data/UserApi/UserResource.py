@@ -31,7 +31,7 @@ def check_admin(email, password, need_status=1):
         raise_error(f"User {email} not found")
     if not admin.check_password(password):
         raise_error("Password don't match")
-    if not admin.status < need_status:
+    if admin.status < need_status:
         raise_error("You don't have permissions for this")
     return admin, session
 
@@ -63,22 +63,21 @@ class UserResource(Resource):
 
     def delete(self, email, password):
         user, session = check_user(email, password)
+        email = user.email
         session.delete(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'User {email} deleted'})
 
     def put(self, email, password):
         user, session = check_user(email, password)
         args = put_parser.parse_args()
-        if args['password'] is not None:
-            res = check_password(args['password'])
-            if not res[0]:
-                raise_error(res[1])
+        i = 0
         for key in list(args.keys()):
             if args[key] is not None:
+                i += 1
                 if key == 'id':
-                    if session.query(User).filter(User.id == args["id"]):
-                        raise_error("This id already exists")
+                    if session.query(User).filter(User.id == args["id"]).first():
+                        raise_error("This ID already exists")
                     user.id = args['id']
                 if key == 'surname':
                     user.surname = args['surname']
@@ -87,19 +86,19 @@ class UserResource(Resource):
                 if key == 'age':
                     user.age = args['age']
                 if key == 'nickname':
-                    if session.query(User).filter(User.nickname == args["nickname"]):
+                    if session.query(User).filter(User.nickname == args["nickname"]).first():
                         raise_error("This nickname already exists")
                     user.nickname = args['nickname']
                 if key == 'background_image_id':
                     user.background_image_id = args['background_image_id']
                 if key == 'email':
-                    if session.query(User).filter(User.nickname == args["email"]):
+                    if session.query(User).filter(User.nickname == args["email"]).first():
                         raise_error("This email already exists")
                     user.email = args['email']
-                if key == 'password':
-                    user.set_password(args['password'])
         session.commit()
-        return jsonify({'success': 'OK'})
+        if i == 0:
+            return raise_error('Empty edit request')
+        return jsonify({'success': f'User {user.email} changed'})
 
 
 class UserListResourceAdmin(Resource):
@@ -115,36 +114,41 @@ class UserListResourceAdmin(Resource):
 
 class UserResourceAdmin(Resource):
     def get(self, email, password, user_id):
-        check_admin(email, password)
+        admin, session = check_admin(email, password)
         user, session = abort_if_user_not_found(user_id)
+        if admin.status < user.status:
+            raise_error("You don't have permissions for this")
         return jsonify({'user': user.to_dict(
             only=('id', 'surname', 'name', 'age', 'nickname', 'status', 'background_image_id', 'email', 'publications',
                   'comments', 'created_date'))})
 
     def delete(self, email, password, user_id):
-        check_admin(email, password)
+        admin, session = check_admin(email, password)
         user, session = abort_if_user_not_found(user_id)
+        email = user.email
+        if admin.status < user.status:
+            raise_error("You don't have permissions for this")
         session.delete(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'User {email} deleted'})
 
     def put(self, email, password, user_id):
         admin, session_1 = check_admin(email, password)
         user, session = abort_if_user_not_found(user_id)
         args = put_parser_admin.parse_args()
+        if admin.status < user.status:
+            raise_error("You don't have permissions for this")
         if args['status'] is not None:
             if args['status'] > admin.status:
                 raise_error("You don't have permissions for this")
             if args['status'] < 0:
                 raise_error("Invalid status")
-        if args['password'] is not None:
-            res = check_password(args['password'])
-            if not res[0]:
-                raise_error(res[1])
+        i = 0
         for key in list(args.keys()):
             if args[key] is not None:
+                i += 1
                 if key == 'id':
-                    if session.query(User).filter(User.id == args["id"]):
+                    if session.query(User).filter(User.id == args["id"]).first():
                         raise_error("This id already exists")
                     user.id = args['id']
                 if key == 'surname':
@@ -154,21 +158,21 @@ class UserResourceAdmin(Resource):
                 if key == 'age':
                     user.age = args['age']
                 if key == 'nickname':
-                    if session.query(User).filter(User.nickname == args["nickname"]):
+                    if session.query(User).filter(User.nickname == args["nickname"]).first():
                         raise_error("This nickname already exists")
                     user.nickname = args['nickname']
                 if key == 'background_image_id':
                     user.background_image_id = args['background_image_id']
                 if key == 'email':
-                    if session.query(User).filter(User.nickname == args["email"]):
+                    if session.query(User).filter(User.nickname == args["email"]).first():
                         raise_error("This email already exists")
                     user.email = args['email']
                 if key == 'status':
                     user.status = args['status']
-                if key == 'password':
-                    user.set_password(args['password'])
         session.commit()
-        return jsonify({'success': 'OK'})
+        if i == 0:
+            return raise_error('Empty edit request')
+        return jsonify({'success': f'User {user.email} changed'})
 
 
 class CreateUserResource(Resource):
@@ -201,4 +205,4 @@ class CreateUserResource(Resource):
         user.created_date = datetime.datetime.now()
         session.add(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'User {args["email"]} create'})
