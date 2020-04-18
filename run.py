@@ -17,7 +17,6 @@ from data.DevelopersDiaryApi.DevelopersDiaryResource import DevelopersDiaryResou
     DevelopersDiaryListResourceAdmin, DevelopersDiaryResourceAdmin, CreateDevelopersDiaryResource
 
 app = Flask(__name__)
-db_session.global_init("Followers_Rjkzavrs.sqlite")
 app.config['SECRET_KEY'] = "secret_key_by_rjkzavr_1920"
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -198,6 +197,19 @@ def edit_account():
                            bgimg=url_for('static', filename='img/background_img_1.png'))
 
 
+@app.route("/delete_comment/<int:id>/<type>/<id_public>/")
+def delete_comment(id, type, id_public):
+    session = db_session.create_session()
+    comment = session.query(Comments).get(id)
+    if current_user.is_authenticated and (comment.author_id == current_user.id or current_user.status >= 2):
+        session.delete(comment)
+        session.commit()
+        return redirect(f"/{type}/{id_public}/")
+    else:
+        session.close()
+        return redirect(f"/{type}/{id_public}/")
+
+
 @app.route('/DevelopersDiaryAdd/', methods=['GET', 'POST'])
 @login_required
 def add_developers_diary():
@@ -215,7 +227,6 @@ def add_developers_diary():
             ds_diary = DevelopersDiary()
             ds_diary.header = form.header.data
             ds_diary.body = form.body.data
-            ds_diary.created_date = datetime.datetime.now()
             ds_diary.availability_status = form.availability_status.data[0]
             current_user.developers_diary.append(ds_diary)
             session.merge(current_user)
@@ -278,11 +289,6 @@ def developers_diary_delete(id):
         abort(404)
 
 
-@app.route("/test/")
-def test():
-    return render_template("base_2.html", title="xnjnj", style=url_for('static', filename='css/style.css'))
-
-
 @app.route("/DevelopersDiary/")
 def list_developers_diary():
     status = 0
@@ -296,7 +302,40 @@ def list_developers_diary():
                            bgimg=get_image_profile(current_user))
 
 
-@app.route("/DevelopersDiaryPublication/<int:id>/")
+@app.route("/DevelopersDiaryPublication/<int:public_id>/<int:comment_id>/", methods=['GET', 'POST'])
+def change_comment_developers_diary(public_id, comment_id):
+    form = CommentsForm()
+    if form.submit.data:
+        session = db_session.create_session()
+        comment = session.query(Comments).get(comment_id)
+        if current_user.is_authenticated and (comment.author_id == current_user.id or current_user.status >= 2):
+            comment.text = form.text.data
+            form.text.data = ""
+            session.commit()
+            return redirect(f"/DevelopersDiaryPublication/{public_id}/")
+        else:
+            session.close()
+            return redirect(f"/DevelopersDiaryPublication/{public_id}/")
+    else:
+        session = db_session.create_session()
+        comment = session.query(Comments).get(comment_id)
+        session.close()
+        if current_user.is_authenticated and (comment.author_id == current_user.id or current_user.status >= 2):
+            session = db_session.create_session()
+            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == public_id).all()
+            form.text.data = comment.text
+            ds_diary = session.query(DevelopersDiary).filter(DevelopersDiary.id == public_id).first()
+            status = current_user.status + 1
+            templ = render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
+                                    style=url_for('static', filename='css/style.css'), form=form, comments=comments,
+                                    count_commentaries=len(comments), base_href=f"DevelopersDiaryPublication/{id}/",
+                                    bgimg=get_image_profile(current_user))
+            session.close()
+            return templ
+        abort(400, message="Отказао в доступе")
+
+
+@app.route("/DevelopersDiaryPublication/<int:id>/", methods=['GET', 'POST'])
 def developers_diary(id):
     status = 0
     if current_user.is_authenticated:
@@ -306,9 +345,36 @@ def developers_diary(id):
     session.close()
     ds_diary.created_date = ":".join(str(ds_diary.created_date).split(":")[:-1])
     if status >= ds_diary.availability_status:
-        return render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
-                               style=url_for('static', filename='css/style.css'),
-                               bgimg=get_image_profile(current_user))
+        form = CommentsForm()
+        if form.submit.data:
+            if current_user.is_authenticated:
+                session = db_session.create_session()
+                user = session.query(User).get(current_user.id)
+                diary = session.query(DevelopersDiary).get(id)
+                comment = Comments()
+                comment.text = form.text.data
+                form.text.data = ""
+                user.comments.append(comment)
+                session.merge(user)
+                diary.comments.append(comment)
+                session.merge(diary)
+                session.commit()
+                session = db_session.create_session()
+                comments = session.query(Comments).filter(Comments.developers_diary_publication_id == id).all()
+                templ = render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
+                                        style=url_for('static', filename='css/style.css'), form=form, comments=comments,
+                                        count_commentaries=len(comments), base_href=f"DevelopersDiaryPublication/{id}/",
+                                        bgimg=get_image_profile(current_user))
+                session.close()
+                return templ
+        else:
+            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == id).all()
+            templ = render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
+                                    style=url_for('static', filename='css/style.css'), form=form, comments=comments,
+                                    count_commentaries=len(comments), base_href=f"DevelopersDiaryPublication/{id}/",
+                                    bgimg=get_image_profile(current_user))
+            session.close()
+            return templ
     return redirect('/DevelopersDiary')
 
 
@@ -335,6 +401,7 @@ def about():
 
 
 if __name__ == '__main__':
+    print("http://127.0.0.1:5000/test/1")
     main(port=5000)
     create_new_db = False
     if create_new_db:

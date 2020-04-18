@@ -1,7 +1,7 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div>
+<div class="block-comments">
+    <div class="title">
+        <h1 class="title-text">Коментарии</h1>
+    </div>
     {% if user.is_authenticated %}
     <form action="" method="post">
         {{ form.hidden_tag() }}
@@ -47,12 +47,13 @@
                 <a><h4 class="green-wide-text">Лайк {{ comment.good_marks }}</h4></a>
                 <a><h4 class="red-wide-text">Дизлайк {{ comment.bad_marks }}</h4></a>
             </div>
+            {% if user.is_authenticated and (comment.author_id == user.id or user.status >= 2) %}
             <div class="right-down-bar">
                 <a href="/{{ base_href }}{{ comment.id }}" class="btn btn-warning diary-text">Редактировать</a>
                 <a href="/delete_comment/{{ comment.id }}/{{ base_href }}" class="btn btn-danger diary-text">Удалить</a>
             </div>
+            {% endif %}
         </div>
     </div>
     {% endfor %}
 </div>
-{% endblock %}
