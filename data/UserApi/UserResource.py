@@ -63,21 +63,18 @@ class UserResource(Resource):
 
     def delete(self, email, password):
         user, session = check_user(email, password)
+        email = user.email
         session.delete(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'User {email} deleted'})
 
     def put(self, email, password):
         user, session = check_user(email, password)
         args = put_parser.parse_args()
-        if args['password'] is not None:
-            res = check_password(args['password'])
-            if not res[0]:
-                raise_error(res[1])
         for key in list(args.keys()):
             if args[key] is not None:
                 if key == 'id':
-                    if session.query(User).filter(User.id == args["id"]):
+                    if session.query(User).filter(User.id == args["id"]).first():
                         raise_error("This id already exists")
                     user.id = args['id']
                 if key == 'surname':
@@ -87,19 +84,17 @@ class UserResource(Resource):
                 if key == 'age':
                     user.age = args['age']
                 if key == 'nickname':
-                    if session.query(User).filter(User.nickname == args["nickname"]):
+                    if session.query(User).filter(User.nickname == args["nickname"]).first():
                         raise_error("This nickname already exists")
                     user.nickname = args['nickname']
                 if key == 'background_image_id':
                     user.background_image_id = args['background_image_id']
                 if key == 'email':
-                    if session.query(User).filter(User.nickname == args["email"]):
+                    if session.query(User).filter(User.nickname == args["email"]).first():
                         raise_error("This email already exists")
                     user.email = args['email']
-                if key == 'password':
-                    user.set_password(args['password'])
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'User {user.email} changed'})
 
 
 class UserListResourceAdmin(Resource):
@@ -144,7 +139,7 @@ class UserResourceAdmin(Resource):
         for key in list(args.keys()):
             if args[key] is not None:
                 if key == 'id':
-                    if session.query(User).filter(User.id == args["id"]):
+                    if session.query(User).filter(User.id == args["id"]).first():
                         raise_error("This id already exists")
                     user.id = args['id']
                 if key == 'surname':
@@ -154,21 +149,19 @@ class UserResourceAdmin(Resource):
                 if key == 'age':
                     user.age = args['age']
                 if key == 'nickname':
-                    if session.query(User).filter(User.nickname == args["nickname"]):
+                    if session.query(User).filter(User.nickname == args["nickname"]).first():
                         raise_error("This nickname already exists")
                     user.nickname = args['nickname']
                 if key == 'background_image_id':
                     user.background_image_id = args['background_image_id']
                 if key == 'email':
-                    if session.query(User).filter(User.nickname == args["email"]):
+                    if session.query(User).filter(User.nickname == args["email"]).first():
                         raise_error("This email already exists")
                     user.email = args['email']
                 if key == 'status':
                     user.status = args['status']
-                if key == 'password':
-                    user.set_password(args['password'])
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'User {user.email} changed'})
 
 
 class CreateUserResource(Resource):
@@ -201,4 +194,4 @@ class CreateUserResource(Resource):
         user.created_date = datetime.datetime.now()
         session.add(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'User {args["email"]} create'})

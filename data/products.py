@@ -15,4 +15,3 @@ class Products(SqlAlchemyBase, SerializerMixin):
     created_date = sqlalchemy.Column(sqlalchemy.DateTime)
     quantity_in_stock = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
     comments = orm.relation('Comments')
-

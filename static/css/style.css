@@ -106,6 +106,27 @@ div.publication-block-header {
     margin-bottom: 30px;
 }
 
+div.publication-block-header-grey {
+    flex-basis: 98%;
+    background: #a2a2a2;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+div.publication-block-header-red {
+    flex-basis: 98%;
+    background: #ff0000;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+div.publication-block-header-green {
+    flex-basis: 98%;
+    background: #00ff00;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
 .asd {
     font-family: 'Comfortaa', cursive;
     font-weight: 100;

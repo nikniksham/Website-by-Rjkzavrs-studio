@@ -2,7 +2,6 @@ import datetime
 from flask import Flask, render_template, url_for, request
 from flask_login import LoginManager, login_required, logout_user, current_user, login_user
 from flask_restful import abort, Api
-from requests import delete
 from werkzeug.utils import redirect
 from data import db_session
 from data.comments import Comments
@@ -10,14 +9,14 @@ from data.users import User
 from data.publications import Publications
 from data.developers_diary import DevelopersDiary
 from data.products import Products
-from data.documentation import Documentation
 from data.forms import *
 from data.UserApi.UserResource import CreateUserResource, UserResourceAdmin, UserListResourceAdmin, UserResource
 from data.DevelopersDiaryApi.DevelopersDiaryResource import DevelopersDiaryResourceUser, \
     DevelopersDiaryListResourceAdmin, DevelopersDiaryResourceAdmin, CreateDevelopersDiaryResource
+from data.PublicationsApi.PublicationsResource import PublicationsResourceUser, PublicationsListResourceAdmin, \
+    PublicationsResourceAdmin, CreatePublicationsResource
 
 app = Flask(__name__)
-db_session.global_init("Followers_Rjkzavrs.sqlite")
 app.config['SECRET_KEY'] = "secret_key_by_rjkzavr_1920"
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -33,6 +32,11 @@ api.add_resource(DevelopersDiaryResourceAdmin,
                  '/api/developers_diary_admin/<string:email>/<string:password>/<int:publication_id>')
 api.add_resource(DevelopersDiaryListResourceAdmin, '/api/developers_diary_admin_list/<string:email>/<string:password>')
 api.add_resource(CreateDevelopersDiaryResource, '/api/developers_diary_admin_create/<string:email>/<string:password>')
+api.add_resource(PublicationsResourceUser, '/api/publication/<string:email>/<string:password>/<int:publication_id>')
+api.add_resource(PublicationsResourceAdmin,
+                 '/api/publication_admin/<string:email>/<string:password>/<int:publication_id>')
+api.add_resource(PublicationsListResourceAdmin, '/api/publication_admin_list/<string:email>/<string:password>')
+api.add_resource(CreatePublicationsResource, '/api/publication_create/<string:email>/<string:password>')
 
 
 def check_password(password):
@@ -314,10 +318,19 @@ def developers_diary(id):
 
 @app.route("/documentation/<resource>/")
 def documentation(resource):
-    data = {"API": ["Тестовая документация", "save_1.html", "navigation_1.html"], "website": ["", ""]}
-    return render_template("documentation.html", navigation=True, style=url_for('static', filename='css/style.css'),
-                           title='Документация', content=data[resource][1], content_navigation=data[resource][2],
-                           content_title=data[resource][0])
+    print(resource)
+    documentation = ['UserApi-UserApiUser', 'UserApi-UserApiAdmin', 'UserApi-UserApiErrors', 'Documentation_main',
+                     'WebsiteHelp', 'UserApi-UserApiErrorsAdmin']
+    if resource not in documentation:
+        abort(404, message="Документация не найдена")
+    navigation_for_documentation = {'UserApi': 'UserApi/UserApiNavigation', 'Documentation_main':
+                                    'DocumentationNavigation', 'WebsiteHelp': 'DocumentationNavigation'}
+    nav = resource.split('/')[0]
+    if len(resource.split('-')) == 2:
+        nav = resource.split('-')[0]
+    return render_template(f"Documentation/{resource.replace('-', '/')}.html", navigation=True,
+                           content_navigation=f"Documentation/{navigation_for_documentation[nav]}.html",
+                           style=url_for('static', filename='css/style.css'), title=f'Документация по {resource}')
 
 
 # Стартовая страница
@@ -335,7 +348,7 @@ def about():
 
 
 if __name__ == '__main__':
-    main(port=5000)
+    main(port=8000)
     create_new_db = False
     if create_new_db:
         db_session.global_init("Followers_Rjkzavrs.sqlite")
@@ -347,7 +360,6 @@ if __name__ == '__main__':
         session.add(Publications())
         session.add(DevelopersDiary())
         session.add(Products())
-        session.add(Documentation())
         session.commit()
         session = db_session.create_session()
         session.add(Comments())
