@@ -3,10 +3,10 @@
 {% block content %}
 <div class="navbar">
     <div class="title">
-        <h1 class="title-text">{{publication.header}}</h1>
+        <h1 class="title-text">{{ publication.header }}</h1>
     </div>
     <div class="title">
-        <p class="diary-text">Дата создания: {{publication.created_date}}</p>
+        <p class="diary-text">Дата создания: {{ publication.formatted_date() }}</p>
     </div>
 </div>
 <div>
@@ -16,4 +16,5 @@
         {% endfor %}
     </p>
 </div>
+{% include "comments.html" %}
 {% endblock %}

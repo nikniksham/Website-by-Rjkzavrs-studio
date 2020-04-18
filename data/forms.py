@@ -52,3 +52,8 @@ class EditAccountForm(FlaskForm):
 class DeleteForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     submit = SubmitField('Подтвердить')
+
+
+class CommentsForm(FlaskForm):
+    text = TextAreaField('Содержание', validators=[DataRequired()])
+    submit = SubmitField('Отправить')
