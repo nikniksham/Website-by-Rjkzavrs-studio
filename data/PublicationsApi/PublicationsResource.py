@@ -63,8 +63,10 @@ class PublicationsResourceUser(Resource):
         user, session = check_user(email, password)
         publication, session = check_publication(publication_id, session, user)
         args = put_parser.parse_args()
+        i = 0
         for key in list(args.keys()):
             if args[key] is not None:
+                i += 1
                 if key == 'id':
                     if session.query(Publications).filter(Publications.id == args["id"]).first():
                         raise_error("This id already exists")
@@ -76,6 +78,8 @@ class PublicationsResourceUser(Resource):
                 if key == 'body':
                     publication.body = args['body']
         session.commit()
+        if i == 0:
+            return raise_error('Empty edit request')
         return jsonify({'success': 'OK'})
 
 
@@ -109,8 +113,10 @@ class PublicationsResourceAdmin(Resource):
         admin, session = check_admin(email, password)
         publication, session = check_publication(publication_id, session, admin)
         args = put_parser_admin.parse_args()
+        i = 0
         for key in list(args.keys()):
             if args[key] is not None:
+                i += 1
                 if key == 'id':
                     if session.query(Publications).filter(Publications.id == args["id"]).first():
                         raise_error("This id already exists")
@@ -128,6 +134,8 @@ class PublicationsResourceAdmin(Resource):
                 if key == 'availability_status':
                     publication.availability_status = args['availability_status']
         session.commit()
+        if i == 0:
+            return raise_error('Empty edit request')
         return jsonify({'success': 'OK'})
 
 

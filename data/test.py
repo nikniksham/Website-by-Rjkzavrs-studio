@@ -7,10 +7,10 @@ test_version_third = False
 
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 link_website_2 = 'http://localhost:8000/'
-test_get = True
+test_get = False
 test_post = False
 test_delete = False
-test_put = False
+test_put = True
 if test_user_version_first:
     if test_post:
         print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
@@ -27,8 +27,8 @@ if test_user_version_first:
         print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
 
     if test_put:
-        print(put(f'{link_website_2}api/user/test_account@yandex.ru/test_123', json={'age': 20}).json())
-        print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
+        print(put(f'{link_website_2}api/user/test_account@yandex.ru/test_123', json={'agggfbe': 20}).json())
+        # print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
 
     if test_delete:
         print(delete(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
@@ -50,7 +50,7 @@ if test_version_second:
     if test_put:
         print(put(f'{link_website_2}api/developers_diary_admin/test@yandex.ru/test_123/10',
                   json={'availability_status': 0}).json())
-        print(get(f'{link_website_2}api/developers_diary_admin/test@yandex.ru/test_123/10').json())
+        # print(get(f'{link_website_2}api/developers_diary_admin/test@yandex.ru/test_123/10').json())
 
     if test_delete:
         print(delete(f'{link_website_2}api/developers_diary_admin/test@yandex.ru/test_123/10').json())

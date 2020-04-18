@@ -6,6 +6,11 @@
     <h1 class="title-text">Документация по UserApiErrors</h1>
 </div>
 <div>
+    <div class="publication-block-header-red">
+        <p class="diary-text">
+            Важно! Все ошибки разбираются только по 1 разу, они повторяться не будут!
+        </p>
+    </div>
     <p class="diary-text">
         Пользуясь нашим Api вы можете встретить ошибки, но вы не переживайте,
         эти ошибки связаны с вашими запросами, и разрешениями на сайте,
@@ -33,25 +38,15 @@ print(post(f'{link_website}api/user',
     </code>
     </div>
     <p class="diary-text">
-        При выполнении этого кода правильным ответом является только<br><br>
+        При выполнении этого кода правильным результатом является только<br><br>
     </p>
     <div class="publication-block-header-green">
         <p class="diary-text">
-            {'user': {'age': 16, 'background_image_id': 0, 'comments': [], 'created_date': '2020-04-18 12:33',
-            'email': 'test_account@yandex.ru', 'id': 10, 'name': 'Николай', 'nickname': 'nikniksham',
-            'publications': [], 'status': 0, 'surname': 'Шамков'}}
+            {'success': 'User test_account@yandex.ru create'}
         </p>
     </div>
     <p class="diary-text">
         Разберём ошибки
-    </p><br>
-    <div class="publication-block-header-red">
-        <p class="diary-text">
-            {'message': "Password don't match"}
-        </p>
-    </div>
-    <p class="diary-text">
-        Пароль от User, которого вы ищете неверный
     </p><br>
     <div class="publication-block-header-red">
         <p class="diary-text">
@@ -68,6 +63,14 @@ print(post(f'{link_website}api/user',
     </div>
     <p class="diary-text">
         Email, который вы хотите использовать в создании пользователя, уже занят
+    </p><br>
+    <div class="publication-block-header-red">
+        <p class="diary-text">
+            {'message': "This nickname already exists"}
+        </p>
+    </div>
+    <p class="diary-text">
+        Nickname, который вы хотите использовать в создании пользователя, уже занят
     </p><br>
     <div class="publication-block-header-red">
         <p class="diary-text">
@@ -91,17 +94,19 @@ from requests import post, get
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 
 # Для работы требуется email и password User(а)
-print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
+print(get(f'{link_website}api/user/test_account@yandex.ru/test_123').json())
 
 </pre>
     </code>
     </div>
     <p class="diary-text">
-        При выполнении этого кода правильным ответом является только<br><br>
+        При выполнении этого кода правильным результатом является только<br><br>
     </p>
     <div class="publication-block-header-green">
         <p class="diary-text">
-            {'success': 'User test_account@yandex.ru create'}
+            {'user': {'age': 16, 'background_image_id': 0, 'comments': [], 'created_date': '2020-04-18 12:33',
+            'email': 'test_account@yandex.ru', 'id': 10, 'name': 'Николай', 'nickname': 'nikniksham',
+            'publications': [], 'status': 0, 'surname': 'Шамков'}}
         </p>
     </div>
     <p class="diary-text">
@@ -109,41 +114,12 @@ print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
     </p><br>
     <div class="publication-block-header-red">
         <p class="diary-text">
-            {'message': 'User test_account@yandex.ru not found'}
+            {'message': "Password don't match"}
         </p>
     </div>
     <p class="diary-text">
-        User, которого вы ищете не найден
-    </p><br>
-    <div class="publication-block-header-red">
-        <p class="diary-text">
-            {'message': 'Id already exists'}
-        </p>
-    </div>
-    <p class="diary-text">
-        Id, который вы хотите использовать в создании пользователя, уже занят
-    </p><br>
-    <div class="publication-block-header-red">
-        <p class="diary-text">
-            {'message': 'This email already exists'}
-        </p>
-    </div>
-    <p class="diary-text">
-        Email, который вы хотите использовать в создании пользователя, уже занят
-    </p><br>
-    <div class="publication-block-header-red">
-        <p class="diary-text">
-            1 - {'message': 'The password length must be 8 or more'}<br>
-            2 - {'message': 'The password must contain at least 1 digit'}<br>
-            3 - {'message': 'The password must contain at least 1 letter'}<br>
-        </p>
-    </div>
-    <p class="diary-text">
-        Беды с паролем:<br>
-        1 - Пароль должен быть длиной 8 символов и больше<br>
-        2 - Пароль должен содержать хотя бы 1 цифру<br>
-        3 - Пароль должен содержать хотя бы 1 букву<br><br>
-        Ошибки, связанные с получением информации о User(е)
+       Пароль от User, и пароль, который вы вводите, не совпадают<br><br>
+        Ошибки, связанные с изменением User(а)<br>
     </p><br>
     <div class="publication-block-header-grey">
     <code>
@@ -153,23 +129,31 @@ from requests import post, get, put
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 
 # Для работы требуется email и password User(а)
-print(put(f'{link_website_2}api/user/test_account@yandex.ru/test_123', json={'age': 20}).json())
+print(put(f'{link_website}api/user/test_account@yandex.ru/test_123', json={'age': 20}).json())
 
-# При выполнении должен вернуть {'success': 'User test_account@yandex.ru changed'}
     </pre>
     </code>
     </div>
-    <div class="publication-block-header-red">
+    <p class="diary-text">
+        При выполнении этого кода правильным результатом является только<br><br>
+    </p>
+    <div class="publication-block-header-green">
         <p class="diary-text">
-            Важно! Пароль поменять при помощи API невозможно! Для смены
-            пароля нужно ---> Профиль ---> Редактировать ---> Сменить пароль
+            {'success': 'User test_account@yandex.ru changed'}
         </p>
     </div>
     <p class="diary-text">
-        Успех, но для полноты картины нам не хватает 1 важной возможности - удаление
-        User(а), к счастью, такая возможность предусмотрена. Для того что бы удалить User(а)
-        вам необходим метод delete и следующий код:
-    </p>
+        Разберём ошибки
+    </p><br>
+    <div class="publication-block-header-red">
+        <p class="diary-text">
+            {'message': 'Empty edit request'}
+        </p>
+    </div>
+    <p class="diary-text">
+        Пустой запрос на изменение, или несуществующие ключи<br><br>
+        Разберём
+    </p><br>
     <div class="publication-block-header-grey">
     <code>
     <pre class="diary-text">
@@ -178,16 +162,19 @@ from requests import post, get, put, delete
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 
 # Для работы требуется email и password User(а)
-print(delete(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
+print(delete(f'{link_website}api/user/test_account@yandex.ru/test_123').json())
 
-# При выполнении должен вернуть {'success': 'User test_account@yandex.ru deleted'}
     </pre>
     </code>
     </div>
     <p class="diary-text">
-        Вы изучили базовое API для User. Советую ознакомиться и с другими материалами
-        по UserApi и другим.
+        При выполнении этого кода правильным результатом является только<br><br>
     </p>
+    <div class="publication-block-header-green">
+        <p class="diary-text">
+            {'success': 'User test_account@yandex.ru changed'}
+        </p>
+    </div>
 </div>
 {% endblock %}
 {% block navigation %}

@@ -71,11 +71,13 @@ class UserResource(Resource):
     def put(self, email, password):
         user, session = check_user(email, password)
         args = put_parser.parse_args()
+        i = 0
         for key in list(args.keys()):
             if args[key] is not None:
+                i += 1
                 if key == 'id':
                     if session.query(User).filter(User.id == args["id"]).first():
-                        raise_error("This id already exists")
+                        raise_error("This ID already exists")
                     user.id = args['id']
                 if key == 'surname':
                     user.surname = args['surname']
@@ -94,6 +96,8 @@ class UserResource(Resource):
                         raise_error("This email already exists")
                     user.email = args['email']
         session.commit()
+        if i == 0:
+            return raise_error('Empty edit request')
         return jsonify({'success': f'User {user.email} changed'})
 
 
@@ -136,8 +140,10 @@ class UserResourceAdmin(Resource):
             res = check_password(args['password'])
             if not res[0]:
                 raise_error(res[1])
+        i = 0
         for key in list(args.keys()):
             if args[key] is not None:
+                i += 1
                 if key == 'id':
                     if session.query(User).filter(User.id == args["id"]).first():
                         raise_error("This id already exists")
@@ -161,6 +167,8 @@ class UserResourceAdmin(Resource):
                 if key == 'status':
                     user.status = args['status']
         session.commit()
+        if i == 0:
+            return raise_error('Empty edit request')
         return jsonify({'success': f'User {user.email} changed'})
 
 

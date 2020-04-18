@@ -45,7 +45,7 @@ from requests import post, get
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 
 # Для работы требуется email и password User(а)
-print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
+print(get(f'{link_website}api/user/test_account@yandex.ru/test_123').json())
 
 # При выполнении должен вернуть {'user': {'age': 16, 'background_image_id': 0, 'comments': [], 'created_date':
         '2020-04-17 23:57', 'email': 'test_account@yandex.ru', 'id': 10, 'name': 'Николай', 'nickname': 'nikniksham',
@@ -66,7 +66,7 @@ from requests import post, get, put
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 
 # Для работы требуется email и password User(а)
-print(put(f'{link_website_2}api/user/test_account@yandex.ru/test_123', json={'age': 20}).json())
+print(put(f'{link_website}api/user/test_account@yandex.ru/test_123', json={'age': 20}).json())
 
 # При выполнении должен вернуть {'success': 'User test_account@yandex.ru changed'}
     </pre>
@@ -91,7 +91,7 @@ from requests import post, get, put, delete
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 
 # Для работы требуется email и password User(а)
-print(delete(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
+print(delete(f'{link_website}api/user/test_account@yandex.ru/test_123').json())
 
 # При выполнении должен вернуть {'success': 'User test_account@yandex.ru deleted'}
     </pre>
