@@ -9,7 +9,7 @@
     <p class="diary-text">
         UserApi работает несложно, начнём разбирать его базовые функции.
         Итак, приступим:<br><br>
-        Начнём с основ, а именно создание User(а).
+        Начнём с основ, а именно создание User.
         Для этого нам понадобиться метод POST из модуля requests<br><br>
     </p>
     <div class="publication-block-header-grey">
@@ -32,7 +32,7 @@ print(post(f'{link_website}api/user',
     </code>
     </div>
     <p class="diary-text">
-        Поздравляю, вы создали своего User(а), но если вы не
+        Поздравляю, вы создали своего User, но если вы не
         доверяете ответу, то вы можете это проверить и другим способом.
         На помощь приходит метод get, теперь, что бы проверить, надо
         написать следующий код:<br><br>
@@ -44,7 +44,7 @@ from requests import post, get
 
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 
-# Для работы требуется email и password User(а)
+# Для работы требуется email и password User
 print(get(f'{link_website}api/user/test_account@yandex.ru/test_123').json())
 
 # При выполнении должен вернуть {'user': {'age': 16, 'background_image_id': 0, 'comments': [], 'created_date':
@@ -53,8 +53,8 @@ print(get(f'{link_website}api/user/test_account@yandex.ru/test_123').json())
     </code>
     </div>
     <p class="diary-text">
-        Ещё 1 поздравление, вы получили информацию об сообственном User(е).
-        Следующим по счёту идёт функция изменения информации о User(е).
+        Ещё 1 поздравление, вы получили информацию об сообственном User.
+        Следующим по счёту идёт функция изменения информации о User.
         Для этого мы используем метод put.
         Напишем следующий код:<br>
     </p>
@@ -65,7 +65,7 @@ from requests import post, get, put
 
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 
-# Для работы требуется email и password User(а)
+# Для работы требуется email и password User
 print(put(f'{link_website}api/user/test_account@yandex.ru/test_123', json={'age': 20}).json())
 
 # При выполнении должен вернуть {'success': 'User test_account@yandex.ru changed'}
@@ -80,7 +80,7 @@ print(put(f'{link_website}api/user/test_account@yandex.ru/test_123', json={'age'
     </div>
     <p class="diary-text">
         Успех, но для полноты картины нам не хватает 1 важной возможности - удаление
-        User(а), к счастью, такая возможность предусмотрена. Для того что бы удалить User(а)
+        User, к счастью, такая возможность предусмотрена. Для того что бы удалить User
         вам необходим метод delete и следующий код:
     </p>
     <div class="publication-block-header-grey">
@@ -90,7 +90,7 @@ from requests import post, get, put, delete
 
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 
-# Для работы требуется email и password User(а)
+# Для работы требуется email и password User
 print(delete(f'{link_website}api/user/test_account@yandex.ru/test_123').json())
 
 # При выполнении должен вернуть {'success': 'User test_account@yandex.ru deleted'}

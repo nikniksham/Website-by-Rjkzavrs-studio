@@ -31,7 +31,7 @@ def check_admin(email, password, need_status=1):
         raise_error(f"User {email} not found")
     if not admin.check_password(password):
         raise_error("Password don't match")
-    if not admin.status < need_status:
+    if admin.status < need_status:
         raise_error("You don't have permissions for this")
     return admin, session
 
@@ -114,32 +114,35 @@ class UserListResourceAdmin(Resource):
 
 class UserResourceAdmin(Resource):
     def get(self, email, password, user_id):
-        check_admin(email, password)
+        admin, session = check_admin(email, password)
         user, session = abort_if_user_not_found(user_id)
+        if admin.status < user.status:
+            raise_error("You don't have permissions for this")
         return jsonify({'user': user.to_dict(
             only=('id', 'surname', 'name', 'age', 'nickname', 'status', 'background_image_id', 'email', 'publications',
                   'comments', 'created_date'))})
 
     def delete(self, email, password, user_id):
-        check_admin(email, password)
+        admin, session = check_admin(email, password)
         user, session = abort_if_user_not_found(user_id)
+        email = user.email
+        if admin.status < user.status:
+            raise_error("You don't have permissions for this")
         session.delete(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'User {email} deleted'})
 
     def put(self, email, password, user_id):
         admin, session_1 = check_admin(email, password)
         user, session = abort_if_user_not_found(user_id)
         args = put_parser_admin.parse_args()
+        if admin.status < user.status:
+            raise_error("You don't have permissions for this")
         if args['status'] is not None:
             if args['status'] > admin.status:
                 raise_error("You don't have permissions for this")
             if args['status'] < 0:
                 raise_error("Invalid status")
-        if args['password'] is not None:
-            res = check_password(args['password'])
-            if not res[0]:
-                raise_error(res[1])
         i = 0
         for key in list(args.keys()):
             if args[key] is not None:

@@ -1,15 +1,15 @@
 from requests import get, post, delete, put
 
-test_user_version_first = True
-test_user_version_second = False
+test_user_version_first = False
+test_user_version_second = True
 test_version_second = False
 test_version_third = False
 
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 link_website_2 = 'http://localhost:8000/'
-test_get = False
-test_post = False
-test_delete = False
+test_get = True
+test_post = True
+test_delete = True
 test_put = True
 if test_user_version_first:
     if test_post:
@@ -24,15 +24,26 @@ if test_user_version_first:
                          'password': 'test_123'}).json())
 
     if test_get:
-        print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
+        print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123/1').json())
 
     if test_put:
-        print(put(f'{link_website_2}api/user/test_account@yandex.ru/test_123', json={'agggfbe': 20}).json())
-        # print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
-
+        print(put(f'{link_website_2}api/user/test_account@yandex.ru/test_123', json={'age': 20}).json())
+        print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
     if test_delete:
         print(delete(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
         print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
+
+if test_user_version_second:
+    if test_get:
+        print(get(f'{link_website_2}api/users/test@yandex.ru/test_123').json())
+
+    if test_put:
+        print(put(f'{link_website_2}api/user/test@yandex.ru/test_123/3', json={'age': 15}).json())
+        print(get(f'{link_website_2}api/user/test@yandex.ru/test_123/3').json())
+
+    if test_delete:
+        print(delete(f'{link_website_2}api/user/test@yandex.ru/test_123/3').json())
+        print(get(f'{link_website_2}api/user/test@yandex.ru/test_123/3').json())
 
 if test_version_second:
     if test_post:

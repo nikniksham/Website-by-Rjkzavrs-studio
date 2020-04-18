@@ -321,14 +321,34 @@ def documentation(resource):
     print(resource)
     documentation = ['UserApi-UserApiUser', 'UserApi-UserApiAdmin', 'UserApi-UserApiErrors', 'Documentation_main',
                      'WebsiteHelp', 'UserApi-UserApiErrorsAdmin']
+    errors_dict = {'UserApiErrors': [[{'message': 'Id already exists'}, "Желаемый Id уже занят"],
+                                     [{'message': 'This email already exists'}, "Желаемый email уже занят"],
+                                     [{'message': "This nickname already exists"}, "Желаемый nickname уже занят"],
+                                     [{'message': 'The password length must be 8 or more'}, "Длина пароля должна "
+                                     "быть 8 символов и больше"],
+                                     [{'message': 'The password must contain at least 1 digit'}, "Пароль должен "
+                                     "содержать хотя бы 1 цифру"],
+                                     [{'message': 'The password must contain at least 1 letter'}, "Пароль должен "
+                                     "содержать хотя бы 1 букву"],
+                                     [{'message': "Password don't match"}, "Пароль от User, и пароль, который вы "
+                                     "вводите, не совпадают"],
+                                     [{'message': 'Empty edit request'}, "Пустой словарь, в запросе на изменение, "
+                                     "или несуществующие аргументы"],
+                                     [{'message': "You don't have permissions for this"},
+                                     "У вас нет прав, так могло произойти, если вы пытаетесь выполнить функции, "
+                                      "которые недоступны с вашими правами. Вы можете узнать свои права заглянув "
+                                      "в личный профиль, или спросив у админа"]]}
     if resource not in documentation:
         abort(404, message="Документация не найдена")
+    errors = None
     navigation_for_documentation = {'UserApi': 'UserApi/UserApiNavigation', 'Documentation_main':
                                     'DocumentationNavigation', 'WebsiteHelp': 'DocumentationNavigation'}
     nav = resource.split('/')[0]
     if len(resource.split('-')) == 2:
         nav = resource.split('-')[0]
-    return render_template(f"Documentation/{resource.replace('-', '/')}.html", navigation=True,
+        if resource.split('-')[1] in list(errors_dict.keys()):
+            errors = errors_dict[resource.split('-')[1]]
+    return render_template(f"Documentation/{resource.replace('-', '/')}.html", navigation=True, errors=errors,
                            content_navigation=f"Documentation/{navigation_for_documentation[nav]}.html",
                            style=url_for('static', filename='css/style.css'), title=f'Документация по {resource}')
 
