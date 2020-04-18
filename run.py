@@ -227,6 +227,7 @@ def add_developers_diary():
             ds_diary = DevelopersDiary()
             ds_diary.header = form.header.data
             ds_diary.body = form.body.data
+            ds_diary.created_date = datetime.datetime.now()
             ds_diary.availability_status = form.availability_status.data[0]
             current_user.developers_diary.append(ds_diary)
             session.merge(current_user)
@@ -322,7 +323,7 @@ def change_comment_developers_diary(public_id, comment_id):
         session.close()
         if current_user.is_authenticated and (comment.author_id == current_user.id or current_user.status >= 2):
             session = db_session.create_session()
-            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == public_id).all()
+            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == public_id).order_by(Comments.created_date.desc()).all()
             form.text.data = comment.text
             ds_diary = session.query(DevelopersDiary).filter(DevelopersDiary.id == public_id).first()
             status = current_user.status + 1
@@ -353,6 +354,7 @@ def developers_diary(id):
                 diary = session.query(DevelopersDiary).get(id)
                 comment = Comments()
                 comment.text = form.text.data
+                comment.created_date = datetime.datetime.now()
                 form.text.data = ""
                 user.comments.append(comment)
                 session.merge(user)
@@ -360,7 +362,8 @@ def developers_diary(id):
                 session.merge(diary)
                 session.commit()
                 session = db_session.create_session()
-                comments = session.query(Comments).filter(Comments.developers_diary_publication_id == id).all()
+                comments = session.query(Comments).filter(Comments.developers_diary_publication_id == id).order_by(
+                    Comments.created_date.desc()).all()
                 templ = render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
                                         style=url_for('static', filename='css/style.css'), form=form, comments=comments,
                                         count_commentaries=len(comments), base_href=f"DevelopersDiaryPublication/{id}/",
@@ -368,7 +371,7 @@ def developers_diary(id):
                 session.close()
                 return templ
         else:
-            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == id).all()
+            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == id).order_by(Comments.created_date.desc()).all()
             templ = render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
                                     style=url_for('static', filename='css/style.css'), form=form, comments=comments,
                                     count_commentaries=len(comments), base_href=f"DevelopersDiaryPublication/{id}/",
