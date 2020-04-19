@@ -25,7 +25,6 @@ class LoginForm(FlaskForm):
 class PublicationsForm(FlaskForm):
     header = StringField('Заголовок публикации', validators=[DataRequired()])
     body = TextAreaField('Содержание публикации', validators=[DataRequired()])
-    availability_status = BooleanField("только для зарегистрированных пользователей")
     submit = SubmitField("Готово")
 
 

@@ -334,7 +334,7 @@ def change_comment_developers_diary(public_id, comment_id):
             status = current_user.status + 1
             templ = render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
                                     style=url_for('static', filename='css/style.css'), form=form, comments=comments,
-                                    count_commentaries=len(comments), base_href=f"DevelopersDiaryPublication/{id}/",
+                                    count_commentaries=len(comments), base_href=f"DevelopersDiaryPublication/{public_id}/",
                                     bgimg=get_image_profile(current_user))
             session.close()
             return templ
@@ -435,6 +435,168 @@ def website_main():
 def about():
     return render_template("about.html", title="О RJKZAVRS STUDIO", style=url_for('static', filename='css/style.css'),
                            bgimg=get_image_profile(current_user))
+
+
+# всё что связано с публикацией
+@app.route('/PublicationsAdd/', methods=['GET', 'POST'])
+@login_required
+def publication_add():
+    form = PublicationsForm()
+    if form.submit.data:
+        session = db_session.create_session()
+        if session.query(Publications).filter(Publications.header == form.header.data).first():
+            return render_template('PublicationsAdd.html', title='Создание записи', form=form,
+                                   message="Запись с таким же названием уже существует",
+                                   style=url_for('static', filename='css/style.css'),
+                                   bgimg=get_image_profile(current_user))
+        session.commit()
+        session = db_session.create_session()
+        publication = Publications()
+        publication.header = form.header.data
+        publication.body = form.body.data
+        publication.created_date = datetime.datetime.now()
+        current_user.publications.append(publication)
+        session.merge(current_user)
+        session.commit()
+        return redirect('/Publications')
+    return render_template('PublicationsAdd.html', title='Создание записи', form=form,
+                           style=url_for('static', filename='css/style.css'),
+                           bgimg=get_image_profile(current_user))
+
+
+@app.route('/PublicationEdit/<int:id>/', methods=['GET', 'POST'])
+@login_required
+def publication_edit(id):
+    session = db_session.create_session()
+    publication = session.query(Publications).get(id)
+    if publication and (current_user.status >= 1 or publication.author_id == current_user.id):
+        form = PublicationsForm()
+        if request.method == "GET":
+            session.close()
+            if publication:
+                form.header.data = publication.header
+                form.body.data = publication.body
+            else:
+                abort(404)
+        if form.submit.data:
+            publication.header = form.header.data
+            publication.body = form.body.data
+            session.commit()
+            return redirect('/Publications')
+        else:
+            return render_template('PublicationsAdd.html', title='Редактирование записи',
+                                   form=form, style=url_for('static', filename='css/style.css'),
+                                   bgimg=get_image_profile(current_user))
+    else:
+        session.close()
+        abort(404)
+
+
+@app.route('/PublicationDelete/<int:id>/', methods=['GET', 'POST'])
+@login_required
+def publication_delete(id):
+    session = db_session.create_session()
+    publication = session.query(Publications).get(id)
+    if publication and (current_user.status >= 1 or publication.author_id == current_user.id):
+        session.delete(publication)
+        session.commit()
+        return redirect("/Publications")
+    else:
+        session.close()
+        abort(404)
+
+
+@app.route("/Publications/")
+def publication_list():
+    status = 0
+    if current_user.is_authenticated:
+        status = current_user.status + 1
+    session = db_session.create_session()
+    publication = session.query(Publications).all()
+    session.close()
+    return render_template("/Publications.html", publications=publication, status=status, user=current_user,
+                           style=url_for('static', filename='css/style.css'),
+                           bgimg=get_image_profile(current_user))
+
+
+@app.route("/Publication/<int:public_id>/<int:comment_id>/", methods=['GET', 'POST'])
+@login_required
+def publication_change_comment(public_id, comment_id):
+    form = CommentsForm()
+    if form.submit.data:
+        session = db_session.create_session()
+        comment = session.query(Comments).get(comment_id)
+        if comment.author_id == current_user.id or current_user.status >= 2:
+            comment.text = form.text.data
+            form.text.data = ""
+            session.commit()
+            return redirect(f"/Publication/{public_id}/")
+        else:
+            session.close()
+            return redirect(f"/Publication/{public_id}/")
+    else:
+        session = db_session.create_session()
+        comment = session.query(Comments).get(comment_id)
+        session.close()
+        if comment.author_id == current_user.id or current_user.status >= 2:
+            session = db_session.create_session()
+            comments = session.query(Comments).filter(Comments.publication_id == public_id).order_by(Comments.created_date.desc()).all()
+            form.text.data = comment.text
+            publication = session.query(Publications).filter(Publications.id == public_id).first()
+            status = current_user.status + 1
+            templ = render_template("/Publication.html", publication=publication, status=status, user=current_user,
+                                    style=url_for('static', filename='css/style.css'), form=form, comments=comments,
+                                    count_commentaries=len(comments), base_href=f"Publication/{public_id}/",
+                                    bgimg=get_image_profile(current_user))
+            session.close()
+            return templ
+        else:
+            abort(400, message="Отказао в доступе")
+
+
+@app.route("/Publication/<int:id>/", methods=['GET', 'POST'])
+def publication(id):
+    status = 0
+    if current_user.is_authenticated:
+        status = current_user.status + 1
+    session = db_session.create_session()
+    publication = session.query(Publications).get(id)
+    session.close()
+    if publication:
+        form = CommentsForm()
+        if form.submit.data:
+            if current_user.is_authenticated:
+                session = db_session.create_session()
+                user = session.query(User).get(current_user.id)
+                publication = session.query(Publications).get(id)
+                comment = Comments()
+                comment.text = form.text.data
+                comment.created_date = datetime.datetime.now()
+                form.text.data = ""
+                user.comments.append(comment)
+                session.merge(user)
+                publication.comments.append(comment)
+                session.merge(publication)
+                session.commit()
+                session = db_session.create_session()
+                comments = session.query(Comments).filter(Comments.publication_id == id).order_by(
+                    Comments.created_date.desc()).all()
+                templ = render_template("/Publication.html", publication=publication, status=status, user=current_user,
+                                        style=url_for('static', filename='css/style.css'), form=form, comments=comments,
+                                        count_commentaries=len(comments), base_href=f"Publication/{id}/",
+                                        bgimg=get_image_profile(current_user))
+                session.close()
+                return templ
+        else:
+            comments = session.query(Comments).filter(Comments.publication_id == id).order_by(
+                Comments.created_date.desc()).all()
+            templ = render_template("/Publication.html", publication=publication, status=status, user=current_user,
+                                    style=url_for('static', filename='css/style.css'), form=form, comments=comments,
+                                    count_commentaries=len(comments), base_href=f"Publication/{id}/",
+                                    bgimg=get_image_profile(current_user))
+            session.close()
+            return templ
+    return redirect('/Publications')
 
 
 if __name__ == '__main__':

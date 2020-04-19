@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="title">
+    {% if user.is_authenticated %}
+    <div class="navbar">
+        <div>
+            <h1 class="title-text">Публикации</h1>
+        </div>
+        <div>
+            <a href="/PublicationsAdd" class="btn btn-warning diary-text">Добавить публикацию</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="navbar">
+        <h1 class="title-text">Публикации</h1>
+    </div>
+    {% endif %}
+</div>
+<div>
+    {% for publication in publications %}
+    <div class="publication-block-header">
+        <div class="right-column-block">
+            <div class="navbar">
+                <div class="diary-left-title">
+                    <h1 class="diary-title">
+                        {{publication.header}}
+                    </h1>
+                </div>
+                {% if status >= 2 or (user.is_authenticated and user.id == publication.author_id) %}
+                <div class="diary-right-title">
+                    <a href="/PublicationEdit/{{ publication.id }}"
+                       class="btn btn-warning diary-text">Изменить</a>
+                    <a href="/PublicationDelete/{{ publication.id }}"
+                       class="btn btn-danger diary-text">Удалить</a>
+                </div>
+                {% endif %}
+            </div>
+            <div>
+                <p class="diary-text">
+                    {{publication.body.split("\n")[0]}}
+                </p>
+            </div>
+            <div class="navbar">
+                <div>
+                    <a href="/Publication/{{publication.id}}">
+                        <p class="diary-text">Подробнее..</p>
+                    </a>
+                </div>
+                {% if status >= 2 %}
+                <div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
