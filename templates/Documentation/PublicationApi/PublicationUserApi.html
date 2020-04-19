@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="title">
+    <h1 class="title-text">Документация по PublicationApi</h1>
+</div>
+<div>
+    <p class="diary-text">
+        PublicationApi работает несложно, начнём разбирать базовые функции для простых пользователей.
+        Первое, что мы сделаем - создадим публикацию:<br><br>
+    </p>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post
+
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Для работы требуется email и password User
+print(post(f'{link_website}api/publication_create/test_account@yandex.ru/test_123',
+                   json={'id': 10,
+                         'header': 'Тестовая запись',
+                         'body': 'Тестовая запись с тестовой информацией.'
+                                 'Тестовая информация для тестовой записи'}).json())
+
+# При выполнении должен вернуть {'success': 'Publication Тестовая запись created'}}
+    </pre>
+    </code>
+    </div>
+    <p class="diary-text">
+        Теперь давайте получим о ней информацию:<br><br>
+    </p>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post, get
+
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Для работы требуется email и password User
+print(get(f'{link_website}api/developers_diary/test_account@yandex.ru/test_123/10').json())
+
+
+# При выполнении должен вернуть {'publication': {'bad_marks': 0, 'body':
+        'Тестовая запись с тестовой информацией.Тестовая информация для тестовой записи',
+        'comments': [], 'created_date': '2020-04-19 15:42', 'good_marks': 0, 'header':
+        'Тестовая запись', 'id': 10}}
+    </pre>
+    </code>
+    </div>
+    <p class="diary-text">
+        Теперь изменим информацию публикации:<br><br>
+    </p>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post, get, put
+
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Для работы требуется email и password User
+print(put(f'{link_website}api/publication/test_account@yandex.ru/test_123/10',
+                  json={'header': 'Тестовая смена загаловка'}).json())
+
+# При выполнении должен вернуть {'success': 'Publication Тестовая смена загаловка changed'}
+    </pre>
+    </code>
+    </div>
+    <p class="diary-text">
+        Ну, и удалим:<br><br>
+    </p>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post, get, put, delete
+
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Для работы требуется email и password User
+print(delete(f'{link_website_2}api/publication/test_account@yandex.ru/test_123/10').json())
+
+
+# При выполнении должен вернуть {'success': 'Publication Тестовая смена загаловка deleted'}
+    </pre>
+    </code>
+    </div>
+</div>
+{% endblock %}
+{% block navigation %}
+{% include content_navigation %}
+{% endblock %}

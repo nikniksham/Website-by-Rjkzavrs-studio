@@ -205,4 +205,4 @@ class CreateUserResource(Resource):
         user.created_date = datetime.datetime.now()
         session.add(user)
         session.commit()
-        return jsonify({'success': f'User {args["email"]} create'})
+        return jsonify({'success': f'User {args["email"]} created'})

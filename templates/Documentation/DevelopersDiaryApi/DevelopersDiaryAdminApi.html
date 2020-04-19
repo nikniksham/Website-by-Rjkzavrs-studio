@@ -16,7 +16,110 @@
         простых смертных, имеют намного больше возможностей.<br><br>
         Начнём по традиции с создания записи, для этого нам нужен следующий код:
     </p><br>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post
 
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Для работы требуется email и password User со статусом 1 и выше (админа)
+print(post(f'{link_website}api/developers_diary_admin_create/test@yandex.ru/test_123',
+                   json={'id': 10,
+                         'header': 'Тестовая запись 2',
+                         'body': 'Тестовая запись с тестовой информацией.'
+                                 'Тестовая информация для тестовой записи',
+                         'availability_status': 2}).json())
+
+# При выполнении должен вернуть {'success': 'Publication Тестовая запись 2 create'}
+    </pre>
+    </code>
+    </div>
+    <p class="diary-text">
+        Мы создали публикацию в дневнике разработчиков, обратите внимание на параметр
+        availability_status, он означает статус доступности.<br> Классификация статусов:<br>
+        0 - доступно всем пользователям<br>1 - только зарегестрированным и выше<br>
+        2 - только админам и выше<br><br>
+        Продолжим обучение, следующим на очереди у нас получение информации об
+        публикации, для этого нам нужен этот код:
+    </p><br>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post, get
+
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Для работы требуется email и password User со статусом 1 и выше (админа)
+print(get(f'{link_website}api/developers_diary_admin/test@yandex.ru/test_123/10').json())
+
+# При выполнении должен вернуть {'publication': {'author_id': 11, 'availability_status': 2, 'bad_marks': 0,
+        'body': 'Тестовая запись с тестовой информацией.Тестовая информация для тестовой записи', 'comments': [],
+        'created_date': '2020-04-19 14:09', 'good_marks': 0, 'header': 'Тестовая запись 2', 'id': 10}}
+    </pre>
+    </code>
+    </div>
+    <p class="diary-text">
+        Получена информация о публикации <br><br>
+        Так же мы можем получать сразу список всех публикаций, для этого мы напишем
+        следующее:
+    </p><br>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post, get
+
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Для работы требуется email и password User со статусом 1 и выше (админа)
+print(get(f'{link_website}api/developers_diary_admin_list/test@yandex.ru/test_123').json())
+
+# При выполнении должен вернуть список с публикациями
+    </pre>
+    </code>
+    </div>
+    <p class="diary-text">
+        Информация о всех публикациях получена<br><br>
+        Теперь мы будем менять публикации, для этого нам понадобиться
+        следующий код:
+    </p><br>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post, get, put
+
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Для работы требуется email и password User со статусом 1 и выше (админа)
+print(put(f'{link_website_2}api/developers_diary_admin/test@yandex.ru/test_123/10',
+                  json={'header': 'Тестовая смена названия 1'}).json())
+
+# При выполнении должен вернуть {'success': 'Publication Тестовая запись 2 changed'}
+    </pre>
+    </code>
+    </div>
+    <p class="diary-text">
+        Мы изменили публикацию, осталось, разве что, удалить её<br><br>
+        Для этого мы напишем это:
+    </p><br>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post, get, put, delete
+
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Для работы требуется email и password User со статусом 1 и выше (админа)
+print(delete(f'{link_website}api/developers_diary_admin/test@yandex.ru/test_123/10').json())
+
+
+# При выполнении должен вернуть {'success': 'Publication Тестовая смена названия 1 deleted'}
+    </pre>
+    </code>
+    </div>
+    <p class="diary-text">
+        На этом наша документация по суперфункциям админа подошла к концу, спасибо, что прочитали.
+    </p><br>
 </div>
 {% endblock %}
 {% block navigation %}

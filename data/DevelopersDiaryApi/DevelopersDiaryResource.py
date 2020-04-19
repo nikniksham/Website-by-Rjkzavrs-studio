@@ -172,4 +172,4 @@ class CreateDevelopersDiaryResource(Resource):
         admin.developers_diary.append(publication)
         session.merge(admin)
         session.commit()
-        return jsonify({'success': f'Publication {args["header"]} create'})
+        return jsonify({'success': f'Publication {args["header"]} created'})

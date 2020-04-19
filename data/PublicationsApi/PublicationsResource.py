@@ -40,7 +40,7 @@ def check_publication(publication_id, session, user=None):
     if not publication:
         raise_error('Publication not found')
     if user is not None:
-        if publication.author != user or user.status < 1:
+        if publication.author != user or user.status + 1 < 1:
             raise_error("You don't have permissions for publication")
     return publication, session
 
@@ -55,9 +55,10 @@ class PublicationsResourceUser(Resource):
     def delete(self, email, password, publication_id):
         user, session = check_user(email, password)
         publication, session = check_publication(publication_id, session, user)
+        header = publication.header
         session.delete(publication)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {header} deleted'})
 
     def put(self, email, password, publication_id):
         user, session = check_user(email, password)
@@ -77,10 +78,11 @@ class PublicationsResourceUser(Resource):
                     publication.header = args['header']
                 if key == 'body':
                     publication.body = args['body']
+        header = publication.header
         session.commit()
         if i == 0:
             return raise_error('Empty edit request')
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {header} changed'})
 
 
 class PublicationsListResourceAdmin(Resource):
@@ -105,9 +107,10 @@ class PublicationsResourceAdmin(Resource):
     def delete(self, email, password, publication_id):
         admin, session = check_admin(email, password)
         publication, session = check_publication(publication_id, session, admin)
+        header = publication.header
         session.delete(publication)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {header} deleted'})
 
     def put(self, email, password, publication_id):
         admin, session = check_admin(email, password)
@@ -133,10 +136,11 @@ class PublicationsResourceAdmin(Resource):
                     publication.bad_marks = args['bad_marks']
                 if key == 'availability_status':
                     publication.availability_status = args['availability_status']
+        header = publication.header
         session.commit()
         if i == 0:
             return raise_error('Empty edit request')
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {header} changed'})
 
 
 class CreatePublicationsResource(Resource):
@@ -158,4 +162,4 @@ class CreatePublicationsResource(Resource):
         user.publications.append(publication)
         session.merge(user)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {args["header"]} created'})

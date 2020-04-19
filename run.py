@@ -320,7 +320,9 @@ def developers_diary(id):
 def documentation(resource):
     documentation = ['UserApi-UserApiUser', 'UserApi-UserApiAdmin', 'UserApi-UserApiErrors', 'Documentation_main',
                      'WebsiteHelp', 'UserApi-UserApiErrorsAdmin', 'DevelopersDiaryApi-DevelopersDiaryUserApi',
-                     'DevelopersDiaryApi-DevelopersDiaryAdminApi', 'DevelopersDiaryApi-DevelopersDiaryErrorsApi']
+                     'DevelopersDiaryApi-DevelopersDiaryAdminApi', 'DevelopersDiaryApi-DevelopersDiaryErrorsApi',
+                     'PublicationApi-PublicationUserApi', 'PublicationApi-PublicationAdminApi',
+                     'PublicationApi-PublicationErrorsApi']
     errors_dict = {'UserApiErrors': [[{'message': 'Id already exists'}, "Желаемый Id уже занят"],
                                      [{'message': 'This email already exists'}, "Желаемый email уже занят"],
                                      [{'message': "This nickname already exists"}, "Желаемый nickname уже занят"],
@@ -363,12 +365,16 @@ def documentation(resource):
     errors = None
     navigation_for_documentation = {'UserApi': 'UserApi/UserApiNavigation', 'Documentation_main':
                                     'DocumentationNavigation', 'WebsiteHelp': 'DocumentationNavigation',
-                                    'DevelopersDiaryApi': 'DevelopersDiaryApi/DevelopersDiaryNavigation'}
+                                    'DevelopersDiaryApi': 'DevelopersDiaryApi/DevelopersDiaryNavigation',
+                                    'PublicationApi': 'PublicationApi/PublicationNavigation'}
     nav = resource.split('/')[0]
     if len(resource.split('-')) == 2:
         nav = resource.split('-')[0]
         if resource.split('-')[1] in list(errors_dict.keys()):
             errors = errors_dict[resource.split('-')[1]]
+        else:
+            if resource.split('-')[1] == 'PublicationErrorsApi':
+                errors = errors_dict['DevelopersDiaryErrorsApi']
     return render_template(f"Documentation/{resource.replace('-', '/')}.html", navigation=True, errors=errors,
                            content_navigation=f"Documentation/{navigation_for_documentation[nav]}.html",
                            style=url_for('static', filename='css/style.css'), title=f'Документация по {resource}')
