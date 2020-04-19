@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="title">
+    <h1 class="title-text">Документация по DevelopersDiaryApi</h1>
+</div>
+<div>
+    <p class="diary-text">
+        DevelopersDiaryApi устроен не сложно, но у простого пользователя в нём
+        очень мало прав. Рассмотрим все возможности простого смертного (да, да - такие есть!)<br><br>
+        Простой пользователь может только получать новости (и то, только те, у которых статус доступности
+        не больше 1)
+    </p><br>
+    <div class="publication-block-header-grey">
+    <code>
+    <pre class="diary-text">
+from requests import post
+
+link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+
+# Нужен email и password User
+print(get(f'{link_website}api/developers_diary/test_account@yandex.ru/test_123/1').json())
+
+# При выполнении должен вернуть {'publications': [{'author_id': 1, 'availability_status': 2, 'bad_marks': 0,
+        'body': 'Тестовая запись с тестовой информацией', 'comments': [], 'created_date': '2020-04-18 23:01',
+        'good_marks': 0, 'header': 'Тестовая запись # 1', 'id': 1}
+    </pre>
+    </code>
+    </div>
+    <p class="diary-text">
+        Для работы необходима публикация со статусом доступности 0 или 1.
+        На этом полномочия User для этого ресурса усё.
+    </p>
+</div>
+{% endblock %}
+{% block navigation %}
+{% include content_navigation %}
+{% endblock %}

@@ -318,9 +318,9 @@ def developers_diary(id):
 
 @app.route("/documentation/<resource>/")
 def documentation(resource):
-    print(resource)
     documentation = ['UserApi-UserApiUser', 'UserApi-UserApiAdmin', 'UserApi-UserApiErrors', 'Documentation_main',
-                     'WebsiteHelp', 'UserApi-UserApiErrorsAdmin']
+                     'WebsiteHelp', 'UserApi-UserApiErrorsAdmin', 'DevelopersDiaryApi-DevelopersDiaryUserApi',
+                     'DevelopersDiaryApi-DevelopersDiaryAdminApi', 'DevelopersDiaryApi-DevelopersDiaryErrorsApi']
     errors_dict = {'UserApiErrors': [[{'message': 'Id already exists'}, "Желаемый Id уже занят"],
                                      [{'message': 'This email already exists'}, "Желаемый email уже занят"],
                                      [{'message': "This nickname already exists"}, "Желаемый nickname уже занят"],
@@ -330,19 +330,40 @@ def documentation(resource):
                                      "содержать хотя бы 1 цифру"],
                                      [{'message': 'The password must contain at least 1 letter'}, "Пароль должен "
                                      "содержать хотя бы 1 букву"],
-                                     [{'message': "Password don't match"}, "Пароль от User, и пароль, который вы "
-                                     "вводите, не совпадают"],
+                                     [{'message': "Password don't match"}, "Пароль от User/Admin, и пароль, который вы "
+                                                                           "вводите, не совпадают"],
                                      [{'message': 'Empty edit request'}, "Пустой словарь, в запросе на изменение, "
-                                     "или несуществующие аргументы"],
+                                                                         "или несуществующие аргументы"],
                                      [{'message': "You don't have permissions for this"},
-                                     "У вас нет прав, так могло произойти, если вы пытаетесь выполнить функции, "
+                                      "У вас нет прав, так могло произойти, если вы пытаетесь выполнить функции, "
                                       "которые недоступны с вашими правами. Вы можете узнать свои права заглянув "
-                                      "в личный профиль, или спросив у админа"]]}
+                                      "в личный профиль, или спросив у админа"],
+                                     [{'message': "User not found"}, "User, которого вы ищете, не найден"],
+                                     [{'message': "Admin not found"}, "Admin, которого вы ищете, не найден"]],
+                   'DevelopersDiaryErrorsApi': [[{'message': 'Id already exists'}, "Желаемый Id уже занят"],
+                                                [{'message': 'This header already exists'},
+                                                 "Желаемый header уже занят"],
+                                                [{'message': "Password don't match"},
+                                                 "Пароль от User/Admin, и пароль, который вы "
+                                                 "вводите, не совпадают"],
+                                                [{'message': 'Empty edit request'},
+                                                 "Пустой словарь, в запросе на изменение, "
+                                                 "или несуществующие аргументы"],
+                                                [{'message': "You don't have permissions for this"},
+                                                 "У вас нет прав, так могло произойти, если вы пытаетесь "
+                                                 "выполнить функции, которые недоступны с вашими правами. Вы можете "
+                                                 "узнать свои права заглянув в личный профиль, или спросив у админа"],
+                                                [{'message': "User not found"}, "User, которого вы ищете, не найден"],
+                                                [{'message': "Admin not found"},
+                                                 "Admin, которого вы ищете, не найден"],
+                                                [{'message': 'Publication not found'}, "Публикации с таким Id не "
+                                                 "существует"]]}
     if resource not in documentation:
         abort(404, message="Документация не найдена")
     errors = None
     navigation_for_documentation = {'UserApi': 'UserApi/UserApiNavigation', 'Documentation_main':
-                                    'DocumentationNavigation', 'WebsiteHelp': 'DocumentationNavigation'}
+                                    'DocumentationNavigation', 'WebsiteHelp': 'DocumentationNavigation',
+                                    'DevelopersDiaryApi': 'DevelopersDiaryApi/DevelopersDiaryNavigation'}
     nav = resource.split('/')[0]
     if len(resource.split('-')) == 2:
         nav = resource.split('-')[0]

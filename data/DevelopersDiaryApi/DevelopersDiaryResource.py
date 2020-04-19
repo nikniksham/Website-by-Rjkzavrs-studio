@@ -25,13 +25,15 @@ def check_admin(email, password, accept_level=1):
     return admin, session
 
 
-def check_user(email, password):
+def check_user(email, password, accept_level=0):
     session = db_session.create_session()
     user = session.query(User).filter(User.email == email).first()
     if not user:
         raise_error('User not found')
     if not user.check_password(password):
         raise_error("Passwords don't match")
+    if user.status < accept_level:
+        raise_error("You don't have permissions for this")
     return user, session
 
 
@@ -55,15 +57,17 @@ class DevelopersDiaryResourceUser(Resource):
                   ))})
 
     def delete(self, email, password, publication_id):
-        user, session = check_user(email, password)
+        user, session = check_user(email, password, 1)
         publication, session = check_publication(publication_id, session, user)
+        header = publication.header
         session.delete(publication)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {header} deleted'})
 
     def put(self, email, password, publication_id):
-        user, session = check_user(email, password)
+        user, session = check_user(email, password, 1)
         publication, session = check_publication(publication_id, session, user)
+        header = publication.header
         args = put_parser_admin.parse_args()
         i = 0
         for key in list(args.keys()):
@@ -88,7 +92,7 @@ class DevelopersDiaryResourceUser(Resource):
         session.commit()
         if i == 0:
             return raise_error('Empty edit request')
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {header} changed'})
 
 
 class DevelopersDiaryListResourceAdmin(Resource):
@@ -113,13 +117,15 @@ class DevelopersDiaryResourceAdmin(Resource):
     def delete(self, email, password, publication_id):
         admin, session = check_admin(email, password)
         publication, session = check_publication(publication_id, session, admin)
+        header = publication.header
         session.delete(publication)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {header} deleted'})
 
     def put(self, email, password, publication_id):
         admin, session = check_admin(email, password)
         publication, session = check_publication(publication_id, session, admin)
+        header = publication.header
         args = put_parser_admin.parse_args()
         i = 0
         for key in list(args.keys()):
@@ -144,7 +150,7 @@ class DevelopersDiaryResourceAdmin(Resource):
         session.commit()
         if i == 0:
             return raise_error('Empty edit request')
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {header} changed'})
 
 
 class CreateDevelopersDiaryResource(Resource):
@@ -166,4 +172,4 @@ class CreateDevelopersDiaryResource(Resource):
         admin.developers_diary.append(publication)
         session.merge(admin)
         session.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({'success': f'Publication {args["header"]} create'})

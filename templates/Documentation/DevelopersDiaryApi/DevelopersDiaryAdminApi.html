@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="title">
+    <h1 class="title-text">Документация по DevelopersDiaryApi</h1>
+</div>
+<div>
+    <div class="publication-block-header-red">
+        <p class="diary-text">
+            Доступно только для админов, то есть для пользователей со статусом 1 и выше
+        </p>
+    </div>
+    <p class="diary-text">
+        Начнём разбирать функционал DevelopersDiaryApi для админов. Админы, в отличии от
+        простых смертных, имеют намного больше возможностей.<br><br>
+        Начнём по традиции с создания записи, для этого нам нужен следующий код:
+    </p><br>
+
+</div>
+{% endblock %}
+{% block navigation %}
+{% include content_navigation %}
+{% endblock %}
