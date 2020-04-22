@@ -44,8 +44,6 @@
         </div>
         <div class="navbar">
             <div class="left-down-bar">
-                <a><h4 class="green-wide-text">Лайк {{ comment.good_marks }}</h4></a>
-                <a><h4 class="red-wide-text">Дизлайк {{ comment.bad_marks }}</h4></a>
             </div>
             {% if user.is_authenticated and (comment.author_id == user.id or user.status >= 2) %}
             <div class="right-down-bar">

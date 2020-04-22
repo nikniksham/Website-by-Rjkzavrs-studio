@@ -5,14 +5,14 @@ test_user_version_second = False
 test_developers_diary_version_first = False
 test_developers_diary_version_second = False
 test_publication_version_first = False
-test_publication_version_second = True
+test_publication_version_second = False
 
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 link_website_2 = 'http://localhost:8000/'
 test_get = False
 test_post = False
 test_delete = False
-test_put = True
+test_put = False
 if test_user_version_first:
     if test_post:
         print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())

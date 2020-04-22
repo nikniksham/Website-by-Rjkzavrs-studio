@@ -154,9 +154,9 @@ def delete_account():
     form = DeleteForm()
     if form.submit.data:
         if current_user.check_password(form.password.data):
-            user = current_user
-            logout_user()
             session = db_session.create_session()
+            user = session.query(User).get(current_user.id)
+            logout_user()
             session.delete(user)
             session.commit()
             return redirect('/')
@@ -627,7 +627,6 @@ def publication(id):
 
 
 if __name__ == '__main__':
-    print("http://127.0.0.1:5000/test/1")
     main(port=8000)
     create_new_db = False
     if create_new_db:
