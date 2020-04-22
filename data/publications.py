@@ -12,7 +12,10 @@ class Publications(SqlAlchemyBase, SerializerMixin):
     created_date = sqlalchemy.Column(sqlalchemy.DateTime)
     good_marks = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
     bad_marks = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
-    availability_status = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
     comments = orm.relation('Comments')
     author_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("user.id"))
     author = orm.relation('User')
+
+    def formatted_date(self):
+        d = self.created_date
+        return f"{str(d.year).rjust(2, '0')}.{str(d.month).rjust(2, '0')}.{d.day} {str(d.hour).rjust(2, '0')}:{str(d.minute).rjust(2, '0')}"

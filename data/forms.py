@@ -25,7 +25,6 @@ class LoginForm(FlaskForm):
 class PublicationsForm(FlaskForm):
     header = StringField('Заголовок публикации', validators=[DataRequired()])
     body = TextAreaField('Содержание публикации', validators=[DataRequired()])
-    availability_status = BooleanField("только для зарегистрированных пользователей")
     submit = SubmitField("Готово")
 
 
@@ -52,3 +51,8 @@ class EditAccountForm(FlaskForm):
 class DeleteForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     submit = SubmitField('Подтвердить')
+
+
+class CommentsForm(FlaskForm):
+    text = TextAreaField('Содержание', validators=[DataRequired()])
+    submit = SubmitField('Отправить')

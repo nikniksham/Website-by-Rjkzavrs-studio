@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import sqlalchemy
 from sqlalchemy_serializer import SerializerMixin
 from .db_session import SqlAlchemyBase
@@ -11,8 +13,11 @@ class DevelopersDiary(SqlAlchemyBase, SerializerMixin):
     body = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     good_marks = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
     bad_marks = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
-    created_date = sqlalchemy.Column(sqlalchemy.DateTime)
+    created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.now())
     comments = orm.relation('Comments')
     availability_status = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
     author_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("user.id"))
     author = orm.relation('User')
+
+    def formatted_date(self):
+        return str(self.created_date)
