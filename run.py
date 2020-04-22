@@ -155,6 +155,9 @@ def delete_account():
     if form.submit.data:
         if current_user.check_password(form.password.data):
             session = db_session.create_session()
+            comments = session.query(Comments).filter(Comments.author_id == current_user.id).all()
+            for comment in comments:
+                session.delete(comment)
             user = session.query(User).get(current_user.id)
             logout_user()
             session.delete(user)
@@ -286,6 +289,9 @@ def developers_diary_delete(id):
         session = db_session.create_session()
         ds_diary = session.query(DevelopersDiary).filter(DevelopersDiary.id == id).first()
         if ds_diary:
+            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == id).all()
+            for comment in comments:
+                session.delete(comment)
             session.delete(ds_diary)
             session.commit()
         else:
@@ -525,6 +531,9 @@ def publication_delete(id):
     session = db_session.create_session()
     publication = session.query(Publications).get(id)
     if publication and (current_user.status >= 1 or publication.author_id == current_user.id):
+        comments = session.query(Comments).filter(Comments.publication_id == id).all()
+        for comment in comments:
+            session.delete(comment)
         session.delete(publication)
         session.commit()
         return redirect("/Publications")
