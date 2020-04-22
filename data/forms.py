@@ -42,7 +42,7 @@ class EditAccountForm(FlaskForm):
     surname = StringField('Фамилия', validators=[DataRequired()])
     nickname = StringField('Никнейм', validators=[DataRequired()])
     age = StringField('Возраст', validators=[DataRequired()])
-    choices = [(0, 'Герои на первом плане'), (1, '"Логотип" Обои'), (2, 'Гг'), (3, 'Игра')]
+    choices = [(0, 'Герои на первом плане'), (2, '"Логотип" Обои'), (1, 'Гг'), (3, 'Игра')]
     background_image_id = SelectField('Выбор заднего фона', choices=choices, validators=[DataRequired()],
                                       default=choices[0])
     submit = SubmitField("Подтвердить")

@@ -185,13 +185,11 @@ def edit_account():
         session = db_session.create_session()
         if session.query(User).filter(User.email == form.email.data).first() and current_user.email != form.email.data:
             return render_template("Edit_Account.html", form=form, style=url_for('static', filename='css/style.css'),
-                                   bgimg=url_for('static', filename='img/background_img_1.png'),
-                                   message='Этот email уже занят')
+                                   bgimg=get_image_profile(current_user), message='Этот email уже занят')
         if session.query(User).filter(User.nickname == form.nickname.data).first() and \
                 current_user.nickname != form.nickname.data:
             return render_template("Edit_Account.html", form=form, style=url_for('static', filename='css/style.css'),
-                                   bgimg=url_for('static', filename='img/background_img_1.png'),
-                                   message='Этот nickname уже занят')
+                                   bgimg=get_image_profile(current_user), message='Этот nickname уже занят')
         user = session.query(User).filter(User.email == current_user.email).first()
         user.email = form.email.data
         user.name = form.name.data
@@ -202,7 +200,7 @@ def edit_account():
         session.commit()
         return redirect('/account/')
     return render_template("Edit_Account.html", form=form, style=url_for('static', filename='css/style.css'),
-                           bgimg=url_for('static', filename='img/background_img_1.png'))
+                           bgimg=get_image_profile(current_user))
 
 
 @app.route("/delete_comment/<int:id>/<type>/<id_public>/")

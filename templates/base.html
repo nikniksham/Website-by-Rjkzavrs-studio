@@ -9,12 +9,22 @@
           crossorigin="anonymous">
     <style>
           body {
-          {% if bgimg %}
+          {% if bgimg == '/static/img/background_img_1.png' %}
           background: #81d012 url({{bgimg}}); /* Цвет фона и путь к файлу */
+          background-repeat: no-repeat;
+          {% elif bgimg == '/static/img/background_img_2.png' %}
+          background: #797979 url({{bgimg}}); /* Цвет фона и путь к файлу */
+          background-repeat: no-repeat;
+          {% elif bgimg == '/static/img/background_img_3.png' %}
+          background: #C3C3C3 url({{bgimg}}); /* Цвет фона и путь к файлу */
+          background-repeat: repeat;
+          {% elif bgimg == '/static/img/background_img_4.png' %}
+          background: #20C040 url({{bgimg}}); /* Цвет фона и путь к файлу */
+          background-repeat: no-repeat;
           {% else %}
           background: #81d012 url(/static/img/background_img_1.png); /* Цвет фона и путь к файлу */
-          {% endif %}
           background-repeat: no-repeat;
+          {% endif %}
           background-attachment: scroll;
           }
     </style>
