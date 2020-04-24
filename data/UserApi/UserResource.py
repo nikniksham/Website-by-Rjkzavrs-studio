@@ -126,7 +126,7 @@ class UserResourceAdmin(Resource):
         admin, session = check_admin(email, password)
         user, session = abort_if_user_not_found(user_id)
         email = user.email
-        if admin.status <= user.status:
+        if admin.status < user.status:
             raise_error("You don't have permissions for this")
         session.delete(user)
         session.commit()
@@ -136,7 +136,7 @@ class UserResourceAdmin(Resource):
         admin, session_1 = check_admin(email, password)
         user, session = abort_if_user_not_found(user_id)
         args = put_parser_admin.parse_args()
-        if admin.status <= user.status:
+        if admin.status < user.status:
             raise_error("You don't have permissions for this")
         if args['status'] is not None:
             if args['status'] > admin.status:
