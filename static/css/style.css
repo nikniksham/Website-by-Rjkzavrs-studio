@@ -178,6 +178,16 @@ div.publication-block-header-green {
     padding: 5px 5px;
     margin: 0 5px;
 }
+.diary-text-white {
+    font-size: 25px;
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: #fff;
+    position: relative;
+    padding: 5px 5px;
+    margin: 0 5px;
+}
 
 .diary-left-title {
     width: 70%;
@@ -259,7 +269,6 @@ div.right-down-bar {
 
 div.center-column {
     border-radius: 10px;
-    opacity: 1;
     background: #fff;
     align: left;
     width: 66%;
@@ -274,7 +283,6 @@ div.center-column-block {
 
 div.right-column {
     border-radius: 10px;
-    opacity: 1;
     background: #fff;
     align: right;
     width: 30%;

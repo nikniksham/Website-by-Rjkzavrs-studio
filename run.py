@@ -1,4 +1,5 @@
 import datetime
+import os
 from flask import Flask, render_template, url_for, request
 from flask_login import LoginManager, login_required, logout_user, current_user, login_user
 from flask_restful import abort, Api
@@ -60,9 +61,9 @@ def get_image_profile(user):
 
 
 def main(port=8000):
-    print("http://127.0.0.1:8000/about/")
-    print('http://127.0.0.1:8000/DevelopersDiary')
-    print('http://127.0.0.1:8000/DevelopersDiaryAdd')
+    # print("http://127.0.0.1:8000/about/")
+    # print('http://127.0.0.1:8000/DevelopersDiary')
+    # print('http://127.0.0.1:8000/DevelopersDiaryAdd')
     app.run(port=port)
 
 
@@ -593,6 +594,21 @@ def publication_change_comment(public_id, comment_id):
             abort(400, message="Отказао в доступе")
 
 
+@app.route("/game_about")
+def about_game():
+    number = 0
+    while True:
+        if not os.path.exists(f'static/img/game_img/game_about_{number + 1}.png'):
+            break
+        else:
+            number += 1
+    numbers = []
+    for i in range(1, number + 1):
+        numbers.append(i)
+    return render_template("Game_about.html", style=url_for('static', filename='css/style.css'),
+                           bgimg=get_image_profile(current_user), numbers=numbers)
+
+
 @app.route("/Publication/<int:id>/", methods=['GET', 'POST'])
 def publication(id):
     status = 0
@@ -676,7 +692,7 @@ def change_status_user(method, id):
             return redirect("/")
         if form.submit.data:
             link_website = 'https://rjkzavrs-studio.herokuapp.com/'
-            link_website = "http://127.0.0.1:8000/"
+            # link_website = "http://127.0.0.1:8000/"
             if method == "up":
                 mess = put(f'{link_website}api/user/{current_user.email}/{form.password.data}/{id}',
                     json={'status': int(user_to_change.status + 1)}).json()
@@ -692,6 +708,15 @@ def change_status_user(method, id):
                                    bgimg=get_image_profile(current_user))
     else:
         abort(401)
+
+
+@app.route("/pre-order/")
+def pre_order():
+    name = None
+    if current_user.is_authenticated:
+        name = current_user.name
+    return render_template("Pre_order.html", name=name, bgimg=get_image_profile(current_user),
+                           style=url_for('static', filename='css/style.css'))
 
 
 if __name__ == '__main__':

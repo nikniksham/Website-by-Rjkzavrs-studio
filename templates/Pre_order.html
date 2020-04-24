@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div align="center">
+    <div class="publication-block-header-green">
+        <p class="diary-text">
+            {% if name != None %}
+                {{ name }}, спасибо, за то, что нажали эту кнопку, мы не забудем вашу поддержку!
+            {% else %}
+                Спасибо, за то, что нажали эту кнопку, мы не забудем вашу поддержку!
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}
