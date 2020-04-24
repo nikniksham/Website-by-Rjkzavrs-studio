@@ -643,6 +643,15 @@ def publication(id):
     return redirect('/Publications')
 
 
+@app.route("/pre-order/")
+def pre_order():
+    name = None
+    if current_user.is_authenticated:
+        name = current_user.name
+    return render_template("Pre_order.html", name=name, bgimg=get_image_profile(current_user),
+                           style=url_for('static', filename='css/style.css'))
+
+
 if __name__ == '__main__':
     print('http://127.0.0.1:8000/game_about')
     main(port=8000)
