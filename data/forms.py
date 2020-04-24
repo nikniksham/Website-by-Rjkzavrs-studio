@@ -56,3 +56,10 @@ class DeleteForm(FlaskForm):
 class CommentsForm(FlaskForm):
     text = TextAreaField('Содержание', validators=[DataRequired()])
     submit = SubmitField('Отправить')
+
+
+class SearchUser(FlaskForm):
+    nickname = StringField('Никнейм')
+    id = StringField('ID пользователя')
+    email = EmailField('Почта')
+    submit = SubmitField('Найти')

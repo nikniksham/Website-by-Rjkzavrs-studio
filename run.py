@@ -2,6 +2,7 @@ import datetime
 from flask import Flask, render_template, url_for, request
 from flask_login import LoginManager, login_required, logout_user, current_user, login_user
 from flask_restful import abort, Api
+from requests import put
 from werkzeug.utils import redirect
 from data import db_session
 from data.comments import Comments
@@ -332,13 +333,15 @@ def change_comment_developers_diary(public_id, comment_id):
         session.close()
         if current_user.is_authenticated and (comment.author_id == current_user.id or current_user.status >= 2):
             session = db_session.create_session()
-            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == public_id).order_by(Comments.created_date.desc()).all()
+            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == public_id).order_by(
+                Comments.created_date.desc()).all()
             form.text.data = comment.text
             ds_diary = session.query(DevelopersDiary).filter(DevelopersDiary.id == public_id).first()
             status = current_user.status + 1
             templ = render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
                                     style=url_for('static', filename='css/style.css'), form=form, comments=comments,
-                                    count_commentaries=len(comments), base_href=f"DevelopersDiaryPublication/{public_id}/",
+                                    count_commentaries=len(comments),
+                                    base_href=f"DevelopersDiaryPublication/{public_id}/",
                                     bgimg=get_image_profile(current_user))
             session.close()
             return templ
@@ -380,7 +383,8 @@ def developers_diary(id):
                 session.close()
                 return templ
         else:
-            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == id).order_by(Comments.created_date.desc()).all()
+            comments = session.query(Comments).filter(Comments.developers_diary_publication_id == id).order_by(
+                Comments.created_date.desc()).all()
             templ = render_template("/DevelopersDiary.html", publication=ds_diary, status=status, user=current_user,
                                     style=url_for('static', filename='css/style.css'), form=form, comments=comments,
                                     count_commentaries=len(comments), base_href=f"DevelopersDiaryPublication/{id}/",
@@ -401,11 +405,11 @@ def documentation(resource):
                                      [{'message': 'This email already exists'}, "Желаемый email уже занят"],
                                      [{'message': "This nickname already exists"}, "Желаемый nickname уже занят"],
                                      [{'message': 'The password length must be 8 or more'}, "Длина пароля должна "
-                                     "быть 8 символов и больше"],
+                                                                                            "быть 8 символов и больше"],
                                      [{'message': 'The password must contain at least 1 digit'}, "Пароль должен "
-                                     "содержать хотя бы 1 цифру"],
+                                                                                                 "содержать хотя бы 1 цифру"],
                                      [{'message': 'The password must contain at least 1 letter'}, "Пароль должен "
-                                     "содержать хотя бы 1 букву"],
+                                                                                                  "содержать хотя бы 1 букву"],
                                      [{'message': "Password don't match"}, "Пароль от User/Admin, и пароль, который вы "
                                                                            "вводите, не совпадают"],
                                      [{'message': 'Empty edit request'}, "Пустой словарь, в запросе на изменение, "
@@ -433,12 +437,12 @@ def documentation(resource):
                                                 [{'message': "Admin not found"},
                                                  "Admin, которого вы ищете, не найден"],
                                                 [{'message': 'Publication not found'}, "Публикации с таким Id не "
-                                                 "существует"]]}
+                                                                                       "существует"]]}
     if resource not in documentation:
         abort(404, message="Документация не найдена")
     errors = None
     navigation_for_documentation = {'UserApi': 'UserApi/UserApiNavigation', 'Documentation_main':
-                                    'DocumentationNavigation', 'WebsiteHelp': 'DocumentationNavigation',
+        'DocumentationNavigation', 'WebsiteHelp': 'DocumentationNavigation',
                                     'DevelopersDiaryApi': 'DevelopersDiaryApi/DevelopersDiaryNavigation',
                                     'PublicationApi': 'PublicationApi/PublicationNavigation'}
     nav = resource.split('/')[0]
@@ -574,7 +578,8 @@ def publication_change_comment(public_id, comment_id):
         session.close()
         if comment.author_id == current_user.id or current_user.status >= 2:
             session = db_session.create_session()
-            comments = session.query(Comments).filter(Comments.publication_id == public_id).order_by(Comments.created_date.desc()).all()
+            comments = session.query(Comments).filter(Comments.publication_id == public_id).order_by(
+                Comments.created_date.desc()).all()
             form.text.data = comment.text
             publication = session.query(Publications).filter(Publications.id == public_id).first()
             status = current_user.status + 1
@@ -631,6 +636,62 @@ def publication(id):
             session.close()
             return templ
     return redirect('/Publications')
+
+
+@app.route("/admin/", methods=("GET", "POST"))
+@login_required
+def admin_panel():
+    session = db_session.create_session()
+    if current_user.status >= 2:
+        form = SearchUser()
+        if form.submit.data:
+            if form.id.data:
+                users = session.query(User).filter(User.id == form.id.data).all()
+            elif form.email.data:
+                users = session.query(User).filter(User.email == form.email.data).all()
+            elif form.nickname.data:
+                users = session.query(User).filter(User.nickname == form.nickname.data).all()
+            else:
+                users = session.query(User).all()
+        else:
+            users = session.query(User).all()
+        return render_template("AdminPanel.html", style=url_for('static', filename='css/style.css'), form=form,
+                               bgimg=get_image_profile(current_user), users=users)
+    else:
+        abort(404)
+
+
+@app.route("/admin_change/<method>/<int:id>/", methods=("GET", "POST"))
+@login_required
+def change_status_user(method, id):
+    if current_user.status >= 2:
+        form = DeleteForm()
+        session = db_session.create_session()
+        user_to_change = session.query(User).get(id)
+        if method == "up":
+            text = f"Для повышения {user_to_change.nickname} введите свой пароль:"
+        elif method == "down":
+            text = f"Для понижения {user_to_change.nickname} введите свой пароль:"
+        else:
+            return redirect("/")
+        if form.submit.data:
+            link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+            link_website = "http://127.0.0.1:8000/"
+            if method == "up":
+                mess = put(f'{link_website}api/user/{current_user.email}/{form.password.data}/{id}',
+                    json={'status': int(user_to_change.status + 1)}).json()
+            else:
+                mess = put(f'{link_website}api/user/{current_user.email}/{form.password.data}/{id}',
+                    json={'status': int(user_to_change.status - 1)}).json()
+            return render_template("status_change_form.html", text=text, form=form,
+                                   style=url_for('static', filename='css/style.css'),
+                                   bgimg=get_image_profile(current_user), message=mess)
+        else:
+            return render_template("status_change_form.html", text=text, form=form,
+                                   style=url_for('static', filename='css/style.css'),
+                                   bgimg=get_image_profile(current_user))
+    else:
+        abort(401)
 
 
 if __name__ == '__main__':

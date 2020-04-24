@@ -17,6 +17,14 @@
 
 {% block navigation %}
 <div>
+    {% if current_user.is_authenticated and current_user.status >= 2%}
+    <div class="right-title-block">
+        <h2 class="asd">Для админов</h2>
+    </div>
+    <div>
+        <a href="/admin/"><p class="diary-text">Панель админа</p></a>
+    </div>
+    {% endif %}
     <div class="right-title-block">
         <h2 class="asd">Полезные ссылки</h2>
     </div>
