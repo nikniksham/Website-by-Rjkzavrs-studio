@@ -356,3 +356,41 @@ div.shop-item-body {
 .rating-mini > span.active {
 	color: gold;
 }
+
+.rating-result {
+	margin: 0 auto;
+}
+
+.rating-result span {
+	padding: 0;
+	font-size: 40px;
+	line-height: 1;
+	color: lightgrey;
+	text-shadow: 1px 1px #bbb;
+}
+
+.rating-result > span:before {
+	content: '★';
+}
+.rating-result > span.active {
+	color: gold;
+	text-shadow: 1px 1px #c60;
+}
+
+.item-chet-block-img {
+    width: 40%;
+    padding: 15px;
+}
+
+.item-right-item-header {
+    width: 60%;
+}
+
+.item-header {
+    display: flex;
+}
+
+div.score-align {
+    display: flex;
+    width: 300px;
+}

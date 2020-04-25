@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="title">
+    <h1 class="title-text">{{ item.header }}</h1>
+</div>
+<div class="item-header">
+    <div class="item-chet-block-img">
+        <img src="{{ item.image }}" width="100%">
+    </div>
+    <div class="item-right-item-header">
+        <div class="score-align">
+            <div>
+                <p class="diary-text">Оценка:</p>
+            </div>
+            <div class="rating-result">
+                {% if 5 >= 1 %}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if 5 >= 2 %}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if 5 >= 3 %}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if 5 >= 4 %}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if 5 >= 5 %}<span class="active"></span>{% else %}<span></span>{% endif %}
+            </div>
+        </div>
+        <div>
+            <p class="diary-text">
+                Осталось на складе: {{ item.quantity_in_stock }}
+            </p>
+        </div>
+        <div>
+            <p class="diary-text">
+                Описание: {{ item.description }}
+            </p>
+        </div>
+    </div>
+</div>
+<div align="center">
+    <a href="/pre-order/" class="btn btn-success btn-lg btn-block diary-text-white">Купить!</a>
+</div>
+{% include "comments.html" %}
+{% endblock %}
