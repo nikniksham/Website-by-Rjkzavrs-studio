@@ -323,3 +323,29 @@ div.block-body-comment {
 div.block-count {
     margin-left: 10px;
 }
+
+div.shop-items {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.shop-item {
+    flex-basis: 33.33333333%;
+}
+
+.rating-mini {
+	display: inline-block;
+	font-size: 0;
+}
+.rating-mini span {
+	padding: 0;
+	font-size: 20px;
+	line-height: 1;
+	color: lightgrey;
+}
+.rating-mini > span:before {
+	content: '★';
+}
+.rating-mini > span.active {
+	color: gold;
+}

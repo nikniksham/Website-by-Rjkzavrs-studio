@@ -695,10 +695,10 @@ def change_status_user(method, id):
             # link_website = "http://127.0.0.1:8000/"
             if method == "up":
                 mess = put(f'{link_website}api/user/{current_user.email}/{form.password.data}/{id}',
-                    json={'status': int(user_to_change.status + 1)}).json()
+                           json={'status': int(user_to_change.status + 1)}).json()
             else:
                 mess = put(f'{link_website}api/user/{current_user.email}/{form.password.data}/{id}',
-                    json={'status': int(user_to_change.status - 1)}).json()
+                           json={'status': int(user_to_change.status - 1)}).json()
             return render_template("status_change_form.html", text=text, form=form,
                                    style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user), message=mess)
@@ -717,6 +717,14 @@ def pre_order():
         name = current_user.name
     return render_template("Pre_order.html", name=name, bgimg=get_image_profile(current_user),
                            style=url_for('static', filename='css/style.css'))
+
+
+@app.route("/shop/")
+def shop():
+    items = [[url_for("static", filename="img/test.png"), "Any name item", 4]] * 6
+    print(items)
+    return render_template("shop_items.html", bgimg=get_image_profile(current_user),
+                           style=url_for('static', filename='css/style.css'), items=items)
 
 
 if __name__ == '__main__':
