@@ -11,7 +11,7 @@ class Products(SqlAlchemyBase, SerializerMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     header = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    img = sqlalchemy.Column(sqlalchemy.Binary)
+    img = sqlalchemy.Column(sqlalchemy.Binary, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime)
     quantity_in_stock = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
     comments = orm.relation('Comments')
