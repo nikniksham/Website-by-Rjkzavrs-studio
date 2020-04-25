@@ -594,21 +594,6 @@ def publication_change_comment(public_id, comment_id):
             abort(400, message="Отказао в доступе")
 
 
-@app.route("/game_about")
-def about_game():
-    number = 0
-    while True:
-        if not os.path.exists(f'static/img/game_img/game_about_{number + 1}.png'):
-            break
-        else:
-            number += 1
-    numbers = []
-    for i in range(1, number + 1):
-        numbers.append(i)
-    return render_template("Game_about.html", style=url_for('static', filename='css/style.css'),
-                           bgimg=get_image_profile(current_user), numbers=numbers)
-
-
 @app.route("/Publication/<int:id>/", methods=['GET', 'POST'])
 def publication(id):
     status = 0
@@ -654,6 +639,32 @@ def publication(id):
     return redirect('/Publications')
 
 
+# всё что связано с игрой
+@app.route("/game_about")
+def about_game():
+    number = 0
+    while True:
+        if not os.path.exists(f'static/img/game_img/game_about_{number + 1}.png'):
+            break
+        else:
+            number += 1
+    numbers = []
+    for i in range(1, number + 1):
+        numbers.append(i)
+    return render_template("Game_about.html", style=url_for('static', filename='css/style.css'),
+                           bgimg=get_image_profile(current_user), numbers=numbers)
+
+
+@app.route("/pre-order/")
+def pre_order():
+    name = None
+    if current_user.is_authenticated:
+        name = current_user.name
+    return render_template("Pre_order.html", name=name, bgimg=get_image_profile(current_user),
+                           style=url_for('static', filename='css/style.css'))
+
+
+# всё что связано с админом
 @app.route("/admin/", methods=("GET", "POST"))
 @login_required
 def admin_panel():
@@ -710,29 +721,94 @@ def change_status_user(method, id):
         abort(401)
 
 
-@app.route("/pre-order/")
-def pre_order():
-    name = None
-    if current_user.is_authenticated:
-        name = current_user.name
-    return render_template("Pre_order.html", name=name, bgimg=get_image_profile(current_user),
-                           style=url_for('static', filename='css/style.css'))
-
-
+# всё что связано с магазином
 @app.route("/shop/")
 def shop():
-    items = [[url_for("static", filename="img/test.png"), "Any name item", 4]] * 24
-    print(items)
+    session = db_session.create_session()
+    items = session.query(Products).all()
     return render_template("shop_items.html", bgimg=get_image_profile(current_user),
                            style=url_for('static', filename='css/style.css'), items=items)
 
 
-@app.route("/shop/<int:id>/")
+@app.route("/shop/<int:id>/", methods=['GET', 'POST'])
 def shop_item(id):
-    item = [url_for("static", filename="img/test.png"), "Any name item", 4, "text about product", 100]
-    return render_template("shop_item.html", bgimg=get_image_profile(current_user),
-                           style=url_for('static', filename='css/style.css'), item=item)
+    status = 0
+    if current_user.is_authenticated:
+        status = current_user.status + 1
+    session = db_session.create_session()
+    item = session.query(Products).get(id)
+    session.close()
+    if item:
+        form = CommentsForm()
+        if form.submit.data:
+            if current_user.is_authenticated:
+                session = db_session.create_session()
+                user = session.query(User).get(current_user.id)
+                products = session.query(Products).get(id)
+                comment = Comments()
+                comment.text = form.text.data
+                comment.created_date = datetime.datetime.now()
+                form.text.data = ""
+                user.comments.append(comment)
+                session.merge(user)
+                products.comments.append(comment)
+                session.merge(products)
+                session.commit()
+                session = db_session.create_session()
+                comments = session.query(Comments).filter(Comments.product_id == id).order_by(
+                    Comments.created_date.desc()).all()
+                templ = render_template("/shop_item.html", item=item, status=status, user=current_user,
+                                        style=url_for('static', filename='css/style.css'), form=form, comments=comments,
+                                        count_commentaries=len(comments), base_href=f"shop/{id}/",
+                                        bgimg=get_image_profile(current_user))
+                session.close()
+                return templ
+        else:
+            comments = session.query(Comments).filter(Comments.product_id == id).order_by(
+                Comments.created_date.desc()).all()
+            templ = render_template("/shop_item.html", item=item, status=status, user=current_user,
+                                    style=url_for('static', filename='css/style.css'), form=form, comments=comments,
+                                    count_commentaries=len(comments), base_href=f"shop/{id}/",
+                                    bgimg=get_image_profile(current_user))
+            session.close()
+            return templ
+    return redirect('/shop')
 
+
+@app.route("/shop/<int:item_id>/<int:comment_id>/", methods=['GET', 'POST'])
+@login_required
+def shop_item_change_comment(item_id, comment_id):
+    form = CommentsForm()
+    if form.submit.data:
+        session = db_session.create_session()
+        comment = session.query(Comments).get(comment_id)
+        if comment.author_id == current_user.id or current_user.status >= 2:
+            comment.text = form.text.data
+            form.text.data = ""
+            session.commit()
+            return redirect(f"/shop/{item_id}/")
+        else:
+            session.close()
+            return redirect(f"/shop/{item_id}/")
+    else:
+        session = db_session.create_session()
+        comment = session.query(Comments).get(comment_id)
+        session.close()
+        if comment.author_id == current_user.id or current_user.status >= 2:
+            session = db_session.create_session()
+            comments = session.query(Comments).filter(Comments.product_id == item_id).order_by(
+                Comments.created_date.desc()).all()
+            form.text.data = comment.text
+            item = session.query(Products).filter(Products.id == item_id).first()
+            status = current_user.status + 1
+            templ = render_template("/shop_item.html", item=item, status=status, user=current_user,
+                                    style=url_for('static', filename='css/style.css'), form=form, comments=comments,
+                                    count_commentaries=len(comments), base_href=f"shop/{item_id}/",
+                                    bgimg=get_image_profile(current_user))
+            session.close()
+            return templ
+        else:
+            abort(400, message="Отказао в доступе")
 
 
 if __name__ == '__main__':
