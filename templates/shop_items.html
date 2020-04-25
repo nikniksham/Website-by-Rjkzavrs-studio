@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="shop-items">
+    {% for item in items %}
+    <div class="shop-item">
+        <div>
+            <img src="{{ item[0] }}">
+        </div>
+        <div>
+            <p class="diary-text">{{ item[1] }}</p>
+        </div>
+        <div class="navbar">
+            <div>
+                <a href="/">
+                    <p class="diary-text">Подробнее..</p>
+                </a>
+            </div>
+            <div class="rating-mini">
+                {% if item[2] >= 1%}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if item[2] >= 2%}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if item[2] >= 3%}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if item[2] >= 4%}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if item[2] >= 5%}<span class="active"></span>{% else %}<span></span>{% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
