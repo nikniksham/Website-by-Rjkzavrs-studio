@@ -331,6 +331,13 @@ div.shop-items {
 
 div.shop-item {
     flex-basis: 33.33333333%;
+    padding: 20px;
+}
+
+div.shop-item-body {
+    background: #efefef;
+    padding: 7px;
+    border-radius: 7px;
 }
 
 .rating-mini {

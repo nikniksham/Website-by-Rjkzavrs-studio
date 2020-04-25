@@ -721,10 +721,21 @@ def pre_order():
 
 @app.route("/shop/")
 def shop():
-    items = [[url_for("static", filename="img/Shop_Images/T-Shirt Main Hero.png"), "Any name item", 4]] * 6
-    print(items)
+    session = db_session.create_session()
+    items = session.query(Products).all()
     return render_template("shop_items.html", bgimg=get_image_profile(current_user),
                            style=url_for('static', filename='css/style.css'), items=items)
+
+
+def create_products(count=6):
+    session = db_session.create_session()
+    for i in range(count):
+        product = Products()
+        product.header = 'Белая футболка с главным героем'
+        product.description = 'Удобная белая футболка, с крутым тематическим принтом'
+        product.image = '/static/img/Shop_Images/T-Shirt Main Hero.png'
+        session.add(product)
+    session.commit()
 
 
 if __name__ == '__main__':
