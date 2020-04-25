@@ -721,7 +721,7 @@ def pre_order():
 
 @app.route("/shop/")
 def shop():
-    items = [[url_for("static", filename="img/test.png"), "Any name item", 4]] * 6
+    items = [[url_for("static", filename="img/test.png"), "Any name item", 4]] * 24
     print(items)
     return render_template("shop_items.html", bgimg=get_image_profile(current_user),
                            style=url_for('static', filename='css/style.css'), items=items)
