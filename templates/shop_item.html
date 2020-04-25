@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="title">
+    <h1 class="title-text">{{ item[1] }}</h1>
+</div>
+<div class="navbar">
+    <div>
+        <img src="{{ item[0] }}" width="33%">
+    </div>
+    <div>
+        <div class="rating-result">
+            <p>Оценка:{% if item[2] >= 1%}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if item[2] >= 2%}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if item[2] >= 3%}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if item[2] >= 4%}<span class="active"></span>{% else %}<span></span>{% endif %}
+                {% if item[2] >= 5%}<span class="active"></span>{% else %}<span></span>{% endif %}
+            </p>
+        </div>
+        <div>Осталось на складе: {{ item[4] }}</div>
+    </div>
+</div>
+<div>
+    <p>
+        {{ item[3] }}
+    </p>
+</div>
+{% endblock %}

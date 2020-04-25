@@ -727,6 +727,14 @@ def shop():
                            style=url_for('static', filename='css/style.css'), items=items)
 
 
+@app.route("/shop/<int:id>/")
+def shop_item(id):
+    item = [url_for("static", filename="img/test.png"), "Any name item", 4, "text about product", 100]
+    return render_template("shop_item.html", bgimg=get_image_profile(current_user),
+                           style=url_for('static', filename='css/style.css'), item=item)
+
+
+
 if __name__ == '__main__':
     main(port=8000)
     create_new_db = False
