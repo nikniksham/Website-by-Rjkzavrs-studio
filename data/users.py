@@ -17,7 +17,6 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime)
     status = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
-    cart = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     background_image_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
     publications = orm.relation('Publications')
     developers_diary = orm.relation('DevelopersDiary')
