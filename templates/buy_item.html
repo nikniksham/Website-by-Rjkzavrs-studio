@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if have %}
+<div>
+    <h1 class="title-text">Вы купили: {{ item.header }} за: {{ item.price }} р.</h1>
+    <p class="diary-text">
+        Вы можете купить ещё {{ item.quantity_in_stock }} {{ item.header }}.
+    </p>
+    <p class="diary-text">
+        Потому что это - {{ item.description }}.
+    </p>
+    <p class="diary-text">
+        Скорее обратно на страницу чтобы купить всем своим друзьям!
+    </p>
+    <a href="/shop/{{ item.id }}" class="btn btn-success btn-lg diary-text-white">На страницу!</a>
+    <p class="diary-text">
+        Или в магазин что бы купить ещё сувениры!
+    </p>
+    <a href="/shop/" class="btn btn-success btn-lg diary-text-white">В магазин!</a>
+</div>
+{% else %}
+<div>
+    <h1>К сожалению у нас нету этого товара(</h1>
+    <p class="diary-text">Но мы обязательно вам сообщим когда этот товар появится!</p>
+    <p class="diary-text">А также вы можете купить что-нибудь другое из нашего магазина!</p>
+    <a href="/shop/" class="btn btn-success btn-lg diary-text-white">В магазин!</a>
+</div>
+{% endif %}
+{% endblock %}
