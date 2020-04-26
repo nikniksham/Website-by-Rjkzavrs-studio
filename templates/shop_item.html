@@ -22,9 +22,15 @@
             </div>
         </div>
         <div>
+            {% if item.quantity_in_stock > 0 %}
             <p class="diary-text">
                 Осталось на складе: {{ item.quantity_in_stock }}
             </p>
+            {% else %}
+            <p class="diary-text-red">
+                К сожалению, нет на складе
+            </p>
+            {% endif %}
         </div>
         <div>
             <p class="diary-text">
@@ -36,10 +42,14 @@
                 Цена: {{ item.price }}
             </p>
         </div>
+        <div>
+            {% if item.quantity_in_stock > 0 %}
+            <a href="/buy/{{ item.id }}" class="btn btn-success btn-lg diary-text-white">Купить!</a>
+            {% else %}
+            <button type="button" class="btn btn-success btn-lg diary-text-white" disabled>Купить</button>
+            {% endif %}
+        </div>
     </div>
-</div>
-<div align="center">
-    <a href="/pre-order/" class="btn btn-success btn-lg btn-block diary-text-white">Купить!</a>
 </div>
 {% include "comments.html" %}
 {% endblock %}

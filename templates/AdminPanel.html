@@ -47,8 +47,16 @@
                 <p class="diary-text">Статус: {{user.status}}</p>
             </div>
             <div class="diary-right-title">
+                {% if user.status < current_user.status %}
                 <a href="/admin_change/up/{{ user.id }}" class="btn btn-success diary-text">Повысить</a>
+                {% else %}
+                <button type="button" class="btn btn-success diary-text" disabled>Повысить</button>
+                {% endif %}
+                {% if user.status > 0 %}
                 <a href="/admin_change/down/{{ user.id }}" class="btn btn-danger diary-text">Понизить</a>
+                {% else %}
+                <button type="button" class="btn btn-danger diary-text" disabled>Повысить</button>
+                {% endif %}
             </div>
         </div>
     </div>

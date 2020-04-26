@@ -178,6 +178,20 @@ div.publication-block-header-green {
     padding: 5px 5px;
     margin: 0 5px;
 }
+
+
+.diary-text-red {
+    font-size: 25px;
+    font-family: 'Comfortaa', cursive;
+    font-weight: 100;
+    font-style: inherit;
+    color: red;
+    position: relative;
+    padding: 5px 5px;
+    margin: 0 5px;
+}
+
+
 .diary-text-white {
     font-size: 25px;
     font-family: 'Comfortaa', cursive;
@@ -393,4 +407,58 @@ div.shop-item-body {
 div.score-align {
     display: flex;
     width: 300px;
+}
+
+
+div.score-align-you {
+    display: flex;
+    width: 400px;
+}
+
+.rating-area {
+	overflow: hidden;
+	width: 210px;
+	margin: 0 auto;
+}
+
+.rating-area:not(:checked) > input {
+	display: none;
+}
+
+.rating-area:not(:checked) > label {
+	float: right;
+	width: 42px;
+	padding: 0;
+	cursor: pointer;
+	font-size: 50px;
+	line-height: 50px;
+	color: lightgrey;
+	text-shadow: 1px 1px #bbb;
+}
+
+.rating-area:not(:checked) > label:before {
+	content: '★';
+}
+
+.rating-area > input:checked ~ label {
+	color: gold;
+	text-shadow: 1px 1px #c60;
+}
+
+.rating-area:not(:checked) > label:hover,
+.rating-area:not(:checked) > label:hover ~ label {
+	color: gold;
+}
+
+.rating-area > input:checked + label:hover,
+.rating-area > input:checked + label:hover ~ label,
+.rating-area > input:checked ~ label:hover,
+.rating-area > input:checked ~ label:hover ~ label,
+.rating-area > label:hover ~ input:checked ~ label {
+	color: gold;
+	text-shadow: 1px 1px goldenrod;
+}
+
+.rate-area > label:active {
+	position: relative;
 }

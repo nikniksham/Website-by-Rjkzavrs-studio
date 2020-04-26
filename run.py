@@ -241,6 +241,44 @@ def edit_account():
                            bgimg=get_image_profile(current_user))
 
 
+@app.route("/change_password/", methods=("GET", "POST"))
+@login_required
+def change_password():
+    form = ChangePassword()
+    if form.submit.data:
+        session = db_session.create_session()
+        user = session.query(User).get(current_user.id)
+        session.close()
+        if user.check_password(form.last_password.data) and form.first_password.data == form.second_password.data:
+            if check_password(form.first_password.data)[0]:
+                session = db_session.create_session()
+                user = session.query(User).get(current_user.id)
+                user.set_password(form.first_password.data)
+                session.commit()
+                return redirect("/account")
+            else:
+                form.first_password.data = ""
+                form.second_password.data = ""
+                form.last_password.data = ""
+                return render_template("change_password.html", message=check_password(form.first_password.data)[1],
+                                       user=current_user, form=form,
+                                       style=url_for('static', filename='css/style.css'),
+                                       bgimg=get_image_profile(current_user))
+        else:
+            form.first_password.data = ""
+            form.second_password.data = ""
+            form.last_password.data = ""
+            return render_template("change_password.html",
+                                   message="Пароли не совпадают или предыдущий пароль написан с ошибкой",
+                                   user=current_user, form=form,
+                                   style=url_for('static', filename='css/style.css'),
+                                   bgimg=get_image_profile(current_user))
+    else:
+        return render_template("change_password.html", user=current_user, form=form,
+                               style=url_for('static', filename='css/style.css'),
+                               bgimg=get_image_profile(current_user))
+
+
 @app.route("/delete_comment/<int:id>/<type>/<id_public>/")
 def delete_comment(id, type, id_public):
     session = db_session.create_session()
@@ -845,6 +883,21 @@ def shop_item_change_comment(item_id, comment_id):
             return templ
         else:
             abort(400, message="Отказао в доступе")
+
+
+@app.route("/buy/<int:id>/")
+def buy_item(id):
+    session = db_session.create_session()
+    item = session.query(Products).get(id)
+    if item and item.quantity_in_stock > 0:
+        item.quantity_in_stock = item.quantity_in_stock - 1
+        session.commit()
+        return render_template("buy_item.html", have=True, item=item, bgimg=get_image_profile(current_user),
+                               style=url_for('static', filename='css/style.css'))
+    else:
+        session.close()
+        return render_template("buy_item.html", have=False, item=item, bgimg=get_image_profile(current_user),
+                               style=url_for('static', filename='css/style.css'))
 
 
 if __name__ == '__main__':

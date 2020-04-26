@@ -63,3 +63,10 @@ class SearchUser(FlaskForm):
     id = StringField('ID пользователя')
     email = EmailField('Почта')
     submit = SubmitField('Найти')
+
+
+class ChangePassword(FlaskForm):
+    last_password = PasswordField('Старый пароль', validators=[DataRequired()])
+    first_password = PasswordField('Новый пароль', validators=[DataRequired()])
+    second_password = PasswordField('Повторите пароль', validators=[DataRequired()])
+    submit = SubmitField('Сменить')
