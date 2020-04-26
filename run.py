@@ -47,9 +47,19 @@ def check_password(password):
               3: 'The password must contain at least 1 digit'}
     if not len(password) >= 8:
         return False, errors[1]
-    if password.isdigit():
+    res = False
+    for symbol in password:
+        if symbol.lower() in list('qwertyuiopasdfghjklzxcvbnmёйцукенгшщзхъфывапролджэячсмитьбю'):
+            res = True
+            break
+    if not res:
         return False, errors[2]
-    if password.isalpha():
+    res = False
+    for symbol in password:
+        if symbol in list('1234567890'):
+            res = True
+            break
+    if not res:
         return False, errors[3]
     return True, errors[0]
 
@@ -121,6 +131,11 @@ def register():
             return render_template('register.html', title='Регистрация', form=form, message="Nickname уже занят",
                                    style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user))
+        if '@' in form.nickname.data:
+            return render_template('register.html', title='Регистрация', form=form, message="Символ @ недопустим в "
+                                                                                            "nickname",
+                                   style=url_for('static', filename='css/style.css'),
+                                   bgimg=get_image_profile(current_user))
         res = check_password(form.password.data)
         if not res[0]:
             return render_template('register.html', title='Регистрация', form=form, message=res[1],
@@ -156,7 +171,10 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         session = db_session.create_session()
-        user = session.query(User).filter(User.email == form.email.data).first()
+        if '@' in form.email.data:
+            user = session.query(User).filter(User.email == form.email.data).first()
+        else:
+            user = session.query(User).filter(User.nickname == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
