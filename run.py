@@ -8,6 +8,7 @@ from werkzeug.utils import redirect
 from data import db_session
 from data.comments import Comments
 from data.users import User
+from random import randrange
 from data.publications import Publications
 from data.developers_diary import DevelopersDiary
 from data.products import Products
@@ -51,6 +52,41 @@ def check_password(password):
     if password.isalpha():
         return False, errors[3]
     return True, errors[0]
+
+
+def create_products():
+    session = db_session.create_session()
+    name_images = []
+    for root, dirs, files in os.walk("static/img/Shop_Images/"):
+        for filename in files:
+            name_images.append(f'/static/img/Shop_Images/{filename}')
+    name_files = ['Футболка с принтом всеми главными героями', 'Футболка с принтом Генерала', 'Футболка с принтом Юли',
+                  'Футболка с Главным Героем', 'Футболка с Солдатом', 'Футболка с Логотипом игры', 'Футболка с Зомби',
+                  'Термос с Генералом', 'Термос с Юлей', 'Термос с Главным Героем', 'Термос с Доготипом игры',
+                  'Термос с Зомби']
+    prices = [1599, 1299, 1299, 1349, 1299, 1199, 1299, 2199, 2199, 2349, 2149, 2299]
+    descriptions = ['Отличная белая футболка отменного качества, с крутым принтом всех главных Героев',
+                    'Отличная белая футболка отменного качества, с крутым принтом Генерала',
+                    'Отличная белая футболка отменного качества, с крутым принтом Юли',
+                    'Отличная белая футболка отменного качества, с крутым принтом Главного Героя',
+                    'Отличная белая футболка отменного качества, с крутым принтом Солдата',
+                    'Отличная белая футболка отменного качества, с Логотипом игры',
+                    'Отличная белая футболка отменного качества, с крутым принтом Зомби',
+                    'Отличный белый термос отменного качества, с крутым принтом Генерал',
+                    'Отличный белый термос отменного качества, с крутым принтом Юли',
+                    'Отличный белый термос отменного качества, с крутым принтом Главного Героя',
+                    'Отличный белый термос отменного качества, с Логотипом игры',
+                    'Отличный белый термос отменного качества, с крутым принтом Зомби. Есть крутая фича,'
+                    'при открытии термоса, у зомби откручивается голова']
+    for i in range(len(name_images)):
+        product = Products()
+        product.header = name_files[i]
+        product.image = name_images[i]
+        product.description = descriptions[i]
+        product.quantity_in_stock = randrange(0, 101)
+        product.price = prices[i]
+        session.add(product)
+    session.commit()
 
 
 def get_image_profile(user):
@@ -808,10 +844,11 @@ def shop_item_change_comment(item_id, comment_id):
             session.close()
             return templ
         else:
-            abort(400, message="Отказано в доступе")
+            abort(400, message="Отказао в доступе")
 
 
 if __name__ == '__main__':
+    # create_products()
     main(port=8000)
     create_new_db = False
     if create_new_db:
