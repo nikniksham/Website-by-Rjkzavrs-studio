@@ -816,8 +816,8 @@ def change_status_user(method, id):
         else:
             return redirect("/")
         if form.submit.data:
-            # link_website = 'https://rjkzavrs-studio.herokuapp.com/'
-            link_website = "http://127.0.0.1:8000/"
+            link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+            # link_website = "http://127.0.0.1:8000/"
             mess = "Неизвестный метод"
             if method == "up":
                 mess = put(f'{link_website}api/user/{current_user.email}/{form.password.data}/{id}',
