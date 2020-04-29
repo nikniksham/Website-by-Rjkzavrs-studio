@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, url_for, request
 from flask_login import LoginManager, login_required, logout_user, current_user, login_user
 from flask_restful import abort, Api
-from requests import put
+from requests import put, delete
 from werkzeug.utils import redirect
 from data import db_session
 from data.comments import Comments
@@ -123,21 +123,25 @@ def register():
                                    bgimg=get_image_profile(current_user))
         session = db_session.create_session()
         if session.query(User).filter(User.email == form.email.data).first():
+            session.close()
             return render_template('register.html', title='Регистрация',
                                    form=form, message="Такой rjkzavrik уже существует",
                                    style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user))
         if session.query(User).filter(User.nickname == form.nickname.data).first():
+            session.close()
             return render_template('register.html', title='Регистрация', form=form, message="Nickname уже занят",
                                    style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user))
         if '@' in form.nickname.data:
+            session.close()
             return render_template('register.html', title='Регистрация', form=form, message="Символ @ недопустим в "
                                                                                             "nickname",
                                    style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user))
         res = check_password(form.password.data)
         if not res[0]:
+            session.close()
             return render_template('register.html', title='Регистрация', form=form, message=res[1],
                                    style=url_for('static', filename='css/style.css'),
                                    bgimg=url_for('static', filename='img/background_img_1.png'))
@@ -175,6 +179,7 @@ def login():
             user = session.query(User).filter(User.email == form.email.data).first()
         else:
             user = session.query(User).filter(User.nickname == form.email.data).first()
+        session.close()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
@@ -240,10 +245,12 @@ def edit_account():
     if form.submit.data:
         session = db_session.create_session()
         if session.query(User).filter(User.email == form.email.data).first() and current_user.email != form.email.data:
+            session.close()
             return render_template("Edit_Account.html", form=form, style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user), message='Этот email уже занят')
         if session.query(User).filter(User.nickname == form.nickname.data).first() and \
                 current_user.nickname != form.nickname.data:
+            session.close()
             return render_template("Edit_Account.html", form=form, style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user), message='Этот nickname уже занят')
         user = session.query(User).filter(User.email == current_user.email).first()
@@ -278,6 +285,7 @@ def change_password():
                 form.first_password.data = ""
                 form.second_password.data = ""
                 form.last_password.data = ""
+                session.close()
                 return render_template("change_password.html", message=check_password(form.first_password.data)[1],
                                        user=current_user, form=form,
                                        style=url_for('static', filename='css/style.css'),
@@ -286,6 +294,7 @@ def change_password():
             form.first_password.data = ""
             form.second_password.data = ""
             form.last_password.data = ""
+            session.close()
             return render_template("change_password.html",
                                    message="Пароли не совпадают или предыдущий пароль написан с ошибкой",
                                    user=current_user, form=form,
@@ -318,19 +327,21 @@ def add_developers_diary():
         if form.submit.data:
             session = db_session.create_session()
             if session.query(DevelopersDiary).filter(DevelopersDiary.header == form.header.data).first():
+                session.close()
                 return render_template('DevelopersDiaryAdd.html', title='Создание записи', form=form,
                                        message="Запись с таким же названием уже существует",
                                        style=url_for('static', filename='css/style.css'),
                                        bgimg=get_image_profile(current_user))
-            session.commit()
+            session.close()
             session = db_session.create_session()
             ds_diary = DevelopersDiary()
             ds_diary.header = form.header.data
             ds_diary.body = form.body.data
             ds_diary.created_date = datetime.datetime.now()
             ds_diary.availability_status = form.availability_status.data[0]
-            current_user.developers_diary.append(ds_diary)
-            session.merge(current_user)
+            user = session.query(User).get(current_user.id)
+            user.developers_diary.append(ds_diary)
+            session.merge(user)
             session.commit()
             return redirect('/DevelopersDiary')
         return render_template('DevelopersDiaryAdd.html', title='Создание записи', form=form,
@@ -387,6 +398,7 @@ def developers_diary_delete(id):
             session.delete(ds_diary)
             session.commit()
         else:
+            session.close()
             abort(404)
         return redirect('/DevelopersDiary')
     else:
@@ -399,7 +411,7 @@ def list_developers_diary():
     if current_user.is_authenticated:
         status = current_user.status + 1
     session = db_session.create_session()
-    ds_diary = session.query(DevelopersDiary).all()
+    ds_diary = session.query(DevelopersDiary).order_by(DevelopersDiary.created_date.desc()).all()
     session.close()
     return render_template("/DevelopersDiarys.html", ds_diary=ds_diary, status=status, user=current_user,
                            style=url_for('static', filename='css/style.css'),
@@ -548,7 +560,8 @@ def documentation(resource):
                 errors = errors_dict['DevelopersDiaryErrorsApi']
     return render_template(f"Documentation/{resource.replace('-', '/')}.html", navigation=True, errors=errors,
                            content_navigation=f"Documentation/{navigation_for_documentation[nav]}.html",
-                           style=url_for('static', filename='css/style.css'), title=f'Документация по {resource}')
+                           style=url_for('static', filename='css/style.css'), title=f'Документация по {resource}',
+                           bgimg=get_image_profile(current_user))
 
 
 # Стартовая страница
@@ -570,23 +583,24 @@ def about():
 @login_required
 def publication_add():
     form = PublicationsForm()
+    session = db_session.create_session()
     if form.submit.data:
-        session = db_session.create_session()
         if session.query(Publications).filter(Publications.header == form.header.data).first():
+            session.close()
             return render_template('PublicationsAdd.html', title='Создание записи', form=form,
                                    message="Запись с таким же названием уже существует",
                                    style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user))
-        session.commit()
-        session = db_session.create_session()
         publication = Publications()
         publication.header = form.header.data
         publication.body = form.body.data
         publication.created_date = datetime.datetime.now()
-        current_user.publications.append(publication)
-        session.merge(current_user)
+        user = session.query(User).get(current_user.id)
+        user.publications.append(publication)
+        session.merge(user)
         session.commit()
         return redirect('/Publications')
+    session.close()
     return render_template('PublicationsAdd.html', title='Создание записи', form=form,
                            style=url_for('static', filename='css/style.css'),
                            bgimg=get_image_profile(current_user))
@@ -605,6 +619,7 @@ def publication_edit(id):
                 form.header.data = publication.header
                 form.body.data = publication.body
             else:
+                session.close()
                 abort(404)
         if form.submit.data:
             publication.header = form.header.data
@@ -612,6 +627,7 @@ def publication_edit(id):
             session.commit()
             return redirect('/Publications')
         else:
+            session.close()
             return render_template('PublicationsAdd.html', title='Редактирование записи',
                                    form=form, style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user))
@@ -643,7 +659,7 @@ def publication_list():
     if current_user.is_authenticated:
         status = current_user.status + 1
     session = db_session.create_session()
-    publication = session.query(Publications).all()
+    publication = session.query(Publications).order_by(Publications.created_date.desc()).all()
     session.close()
     return render_template("/Publications.html", publications=publication, status=status, user=current_user,
                            style=url_for('static', filename='css/style.css'),
@@ -728,6 +744,7 @@ def publication(id):
                                     bgimg=get_image_profile(current_user))
             session.close()
             return templ
+    session.close()
     return redirect('/Publications')
 
 
@@ -774,9 +791,11 @@ def admin_panel():
                 users = session.query(User).all()
         else:
             users = session.query(User).all()
+        session.close()
         return render_template("AdminPanel.html", style=url_for('static', filename='css/style.css'), form=form,
                                bgimg=get_image_profile(current_user), users=users)
     else:
+        session.close()
         abort(404)
 
 
@@ -787,21 +806,29 @@ def change_status_user(method, id):
         form = DeleteForm()
         session = db_session.create_session()
         user_to_change = session.query(User).get(id)
+        session.close()
         if method == "up":
             text = f"Для повышения {user_to_change.nickname} введите свой пароль:"
         elif method == "down":
             text = f"Для понижения {user_to_change.nickname} введите свой пароль:"
+        elif method == 'delete':
+            text = f'Для удаления {user_to_change.nickname} введите свой пароль:'
         else:
             return redirect("/")
         if form.submit.data:
-            link_website = 'https://rjkzavrs-studio.herokuapp.com/'
-            # link_website = "http://127.0.0.1:8000/"
+            # link_website = 'https://rjkzavrs-studio.herokuapp.com/'
+            link_website = "http://127.0.0.1:8000/"
+            mess = "Неизвестный метод"
             if method == "up":
                 mess = put(f'{link_website}api/user/{current_user.email}/{form.password.data}/{id}',
                            json={'status': int(user_to_change.status + 1)}).json()
-            else:
+            elif method == 'down':
                 mess = put(f'{link_website}api/user/{current_user.email}/{form.password.data}/{id}',
                            json={'status': int(user_to_change.status - 1)}).json()
+            elif method == 'delete':
+                mess = delete(f'{link_website}api/user/{current_user.email}/{form.password.data}/{id}').json()
+            if list(mess.keys())[0] == 'success':
+                return redirect('/admin/')
             return render_template("status_change_form.html", text=text, form=form,
                                    style=url_for('static', filename='css/style.css'),
                                    bgimg=get_image_profile(current_user), message=mess)
@@ -818,6 +845,7 @@ def change_status_user(method, id):
 def shop():
     session = db_session.create_session()
     items = session.query(Products).all()
+    session.close()
     return render_template("shop_items.html", bgimg=get_image_profile(current_user),
                            style=url_for('static', filename='css/style.css'), items=items)
 
