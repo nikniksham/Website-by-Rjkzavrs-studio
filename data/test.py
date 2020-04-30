@@ -9,10 +9,10 @@ test_publication_version_second = False
 
 link_website = 'https://rjkzavrs-studio.herokuapp.com/'
 link_website_2 = 'http://localhost:8000/'
-test_get = False
-test_post = False
-test_delete = False
-test_put = False
+test_get = True
+test_post = True
+test_delete = True
+test_put = True
 if test_user_version_first:
     if test_post:
         print(get(f'{link_website_2}api/user/test_account@yandex.ru/test_123').json())
