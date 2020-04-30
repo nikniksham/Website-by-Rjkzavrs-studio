@@ -52,7 +52,7 @@
                 {% else %}
                 <button type="button" class="btn btn-success diary-text" disabled>Повысить</button>
                 {% endif %}
-                {% if current_user.status >= user.status and current_user.id != user.id %}
+                {% if current_user.status >= user.status and user.status > 0 and current_user.id != user.id %}
                 <a href="/admin_change/down/{{ user.id }}" class="btn btn-warning diary-text">Понизить</a>
                 {% else %}
                 <button type="button" class="btn btn-warning diary-text" disabled>Понизить</button>
