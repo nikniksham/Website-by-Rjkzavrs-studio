@@ -53,7 +53,7 @@ class DevelopersDiaryResourceUser(Resource):
         user, session = check_user(email, password)
         publication = check_publication(publication_id, session, user)[0]
         return jsonify({'publication': publication.to_dict(
-            only=('id', 'header', 'body', 'good_marks', 'bad_marks', 'created_date', 'comments', 'availability_status'
+            only=('id', 'header', 'body', 'created_date', 'comments', 'availability_status'
                   ))})
 
     def delete(self, email, password, publication_id):
@@ -83,10 +83,6 @@ class DevelopersDiaryResourceUser(Resource):
                     publication.header = args['header']
                 if key == 'body':
                     publication.body = args['body']
-                if key == 'good_marks':
-                    publication.good_marks = args['good_marks']
-                if key == 'bad_marks':
-                    publication.bad_marks = args['bad_marks']
                 if key == 'availability_status':
                     publication.availability_status = args['availability_status']
         session.commit()
@@ -101,8 +97,7 @@ class DevelopersDiaryListResourceAdmin(Resource):
         session = db_session.create_session()
         publications = session.query(DevelopersDiary).all()
         return jsonify({'publications': [item.to_dict(
-            only=('id', 'header', 'body', 'good_marks', 'bad_marks', 'created_date', 'comments', 'availability_status',
-                  'author_id'))
+            only=('id', 'header', 'body', 'created_date', 'availability_status', 'author_id'))
             for item in publications]})
 
 
@@ -111,8 +106,7 @@ class DevelopersDiaryResourceAdmin(Resource):
         admin, session = check_admin(email, password)
         publication, session = check_publication(publication_id, session, admin)
         return jsonify({'publication': publication.to_dict(
-            only=('id', 'header', 'body', 'good_marks', 'bad_marks', 'created_date', 'comments', 'availability_status',
-                  'author_id'))})
+            only=('id', 'header', 'body', 'created_date', 'comments', 'availability_status', 'author_id'))})
 
     def delete(self, email, password, publication_id):
         admin, session = check_admin(email, password)
@@ -141,10 +135,6 @@ class DevelopersDiaryResourceAdmin(Resource):
                     publication.header = args['header']
                 if key == 'body':
                     publication.body = args['body']
-                if key == 'good_marks':
-                    publication.good_marks = args['good_marks']
-                if key == 'bad_marks':
-                    publication.bad_marks = args['bad_marks']
                 if key == 'availability_status':
                     publication.availability_status = args['availability_status']
         session.commit()
@@ -167,8 +157,6 @@ class CreateDevelopersDiaryResource(Resource):
         publication.body = args['body']
         publication.availability_status = args["availability_status"]
         publication.created_date = datetime.datetime.now()
-        publication.good_marks = 0
-        publication.bad_marks = 0
         admin.developers_diary.append(publication)
         session.merge(admin)
         session.commit()

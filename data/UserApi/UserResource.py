@@ -107,8 +107,7 @@ class UserListResourceAdmin(Resource):
         session = db_session.create_session()
         users = session.query(User).all()
         return jsonify({'user': [item.to_dict(
-            only=('id', 'surname', 'name', 'age', 'nickname', 'background_image_id', 'status', 'email',
-                  'background_image_id', 'publications', 'developers_diary'))
+            only=('id', 'surname', 'name', 'age', 'nickname', 'status', 'background_image_id', 'email', 'created_date'))
             for item in users]})
 
 

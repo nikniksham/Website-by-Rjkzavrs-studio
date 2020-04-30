@@ -50,7 +50,7 @@ class PublicationsResourceUser(Resource):
         user, session = check_user(email, password)
         publication = check_publication(publication_id, session)[0]
         return jsonify({'publication': publication.to_dict(
-            only=('id', 'header', 'body', 'good_marks', 'bad_marks', 'created_date', 'comments'))})
+            only=('id', 'header', 'body', 'created_date', 'comments'))})
 
     def delete(self, email, password, publication_id):
         user, session = check_user(email, password)
@@ -91,8 +91,7 @@ class PublicationsListResourceAdmin(Resource):
         session = db_session.create_session()
         publications = session.query(Publications).all()
         return jsonify({'publications': [item.to_dict(
-            only=('id', 'header', 'body', 'good_marks', 'bad_marks', 'created_date', 'comments', 'availability_status',
-                  'author_id'))
+            only=('id', 'header', 'body', 'created_date', 'comments', 'availability_status', 'author_id'))
             for item in publications]})
 
 
@@ -101,8 +100,7 @@ class PublicationsResourceAdmin(Resource):
         admin, session = check_admin(email, password)
         publication, session = check_publication(publication_id, session, admin)
         return jsonify({'publication': publication.to_dict(
-            only=('id', 'header', 'body', 'good_marks', 'bad_marks', 'created_date', 'comments', 'availability_status',
-                  'author_id'))})
+            only=('id', 'header', 'body', 'created_date', 'comments', 'availability_status', 'author_id'))})
 
     def delete(self, email, password, publication_id):
         admin, session = check_admin(email, password)
@@ -130,10 +128,6 @@ class PublicationsResourceAdmin(Resource):
                     publication.header = args['header']
                 if key == 'body':
                     publication.body = args['body']
-                if key == 'good_marks':
-                    publication.good_marks = args['good_marks']
-                if key == 'bad_marks':
-                    publication.bad_marks = args['bad_marks']
                 if key == 'availability_status':
                     publication.availability_status = args['availability_status']
         header = publication.header
@@ -157,8 +151,6 @@ class CreatePublicationsResource(Resource):
         publication.body = args['body']
         publication.availability_status = 0
         publication.created_date = datetime.datetime.now()
-        publication.good_marks = 0
-        publication.bad_marks = 0
         user.publications.append(publication)
         session.merge(user)
         session.commit()
